@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ email_subject }}</title>
+</head>
+<body>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>{{ email_subject }}</h2>
+        <p>Dear Business Owner,</p>
+        
+        <p>We are impressed by your brand <a href="{{ item_link }}" target="_blank">{{ item_link }}</a> and would like to explore potential collaboration opportunities with you. Here’s a brief overview of what we've discovered:</p>
+        
+        <ul>
+            <li><strong>Summary:</strong> {{ brand_summary }}</li>
+            <li><strong>Technology Stacks:</strong> 
+                <ul>
+                    {% for tech_stack in technology_stacks %}
+                        <li>{{ tech_stack }}</li>
+                    {% empty %}
+                        <li>Not available</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li><strong>Backlink Count:</strong> {{ backlink_count }}</li>
+            <li><strong>Traffic Visits:</strong> {{ traffic_visits }}</li>
+        </ul>
+        
+        <p>Looking forward to discussing how we can mutually benefit from a partnership.</p>
+        
+        <p>Best regards,<br>Your Name</p>
+    </div>
+</body>
+</html>

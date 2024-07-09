@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Leads</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 0;
+            height: 100vh;
+            background-color: #f0f8ff; /* Very light blue background */
+        }
+        .drawer {
+            width: 250px;
+            background-color: #d9edf7; /* Lightest blue color for the drawer */
+            color: #004085; /* Dark blue text color */
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+        }
+        .drawer a, .drawer .dropdown-btn {
+            color: #004085; /* Dark blue text color */
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .drawer a:hover, .drawer .dropdown-btn:hover {
+            background-color: #bfefff; /* Lighter shade of blue for hover effect */
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+            background-color: #ffffff; /* White background for content area */
+            overflow-y: auto;
+            margin-left: 250px;
+        }
+        .heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #004085; /* Dark blue color for heading */
+        }
+        .dropdown {
+            display: none;
+            flex-direction: column;
+            padding-left: 10px;
+        }
+        .dropdown a {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            background-color: #e9f7fc; /* Very light blue background for dropdown items */
+            border-left: 3px solid #004085; /* Blue left border for dropdown items */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dropdown a:hover {
+            background-color: #bfefff; /* Lighter shade of blue for hover effect */
+            color: #002752; /* Darker blue text color on hover */
+        }
+        .drawer .dropdown-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9f7fc; /* Very light blue background for dropdown button */
+        }
+        .drawer .dropdown-btn::after {
+            content: '▼';
+            font-size: 12px;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        .drawer .dropdown-btn.active::after {
+            transform: rotate(-180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="drawer">
+        <div class="heading">Email Marketing</div>
+        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
+        <div id="leadsDropdown" class="dropdown">
+            <a href="{% url 'find-shopify' %}">All Leads</a>
+            <a href="{% url 'add-lead' %}">Add Lead</a>
+            <a href="{% url 'find-leads' %}">Find Lead</a>
+        </div>
+        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
+        <div id="mailDropdown" class="dropdown">
+            <a href="{% url 'send_mail' %}">Send Mail</a>
+            <a href="{% url 'receive_mail' %}">Receive Mail</a>
+            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
+            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
+            <a href="{% url 'get_received_emails' %}">Received Mails</a>
+            <a href="{% url 'add_domain' %}">Add Domain</a>
+            <a href="{% url 'verify_domain' %}">Verify Domain</a>
+        </div>
+        <a href="#">AI Optimization</a>
+    </div>
+    <div class="content">
+        <h1>Find Leads</h1>
+        <form id="findLeadsForm" method="get">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search query" id="searchQuery" name="query" value="{{ query }}">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+        <div id="leadsList">
+            {% for lead in leads %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ lead.name }}</h5>
+                        <p class="card-text">Contact Number: {{ lead.contact_no }}</p>
+                        <p class="card-text">Industry: {{ lead.industry }}</p>
+                        <p class="card-text">Location: {{ lead.location }}</p>
+                        <p class="card-text">Address: {{ lead.address }}</p>
+                        <p class="card-text">Notes: {{ lead.notes }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function toggleDropdown(id) {
+            var dropdown = document.getElementById(id);
+            var dropdownBtn = document.getElementById(id + 'Btn');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'flex';
+                dropdownBtn.classList.add('active');
+            } else {
+                dropdown.style.display = 'none';
+                dropdownBtn.classList.remove('active');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all dropdowns to be hidden
+            var dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(function (dropdown) {
+                dropdown.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

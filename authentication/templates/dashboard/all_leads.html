@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Leads</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff; /* Very light blue background */
+        }
+        .drawer {
+            width: 250px;
+            background-color: #d9edf7; /* Lightest blue color for the drawer */
+            color: #004085; /* Dark blue text color */
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .drawer a, .drawer .dropdown-btn {
+            color: #004085; /* Dark blue text color */
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+        }
+        .drawer a:hover, .drawer .dropdown-btn:hover {
+            background-color: #bfefff; /* Lighter shade of blue for hover effect */
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+            margin-left: 250px; /* Adjust for drawer width */
+            background-color: #ffffff; /* White background for content area */
+            overflow-y: auto;
+        }
+        .heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #004085; /* Dark blue color for heading */
+        }
+        .dropdown {
+            display: none;
+            flex-direction: column;
+            padding-left: 10px;
+        }
+        .dropdown a {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            background-color: #e9f7fc; /* Very light blue background for dropdown items */
+            border-left: 3px solid #004085; /* Blue left border for dropdown items */
+        }
+        .drawer .dropdown-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9f7fc; /* Very light blue background for dropdown button */
+        }
+        .drawer .dropdown-btn::after {
+            content: '▼';
+            font-size: 12px;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        .drawer .dropdown-btn.active::after {
+            transform: rotate(-180deg);
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Light grey border */
+        }
+        th {
+            background-color: #004085; /* Dark blue background for table header */
+            color: #fff; /* White text color */
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Light grey background for even rows */
+        }
+        tr:hover {
+            background-color: #e9f7fc; /* Very light blue background for hover effect */
+        }
+    </style>
+    <script>
+        function toggleDropdown(id) {
+            var dropdown = document.getElementById(id);
+            var dropdownBtn = document.getElementById(id + 'Btn');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+                dropdownBtn.classList.add('active');
+            } else {
+                dropdown.style.display = 'none';
+                dropdownBtn.classList.remove('active');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="drawer">
+        <div class="heading">Email Marketing</div>
+        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
+        <div id="leadsDropdown" class="dropdown">
+            <a href="{% url 'find-shopify' %}">All Leads</a>
+            <a href="{% url 'add-lead' %}">Add Lead</a>
+            <a href="{% url 'find-leads' %}">Find Lead</a>
+        </div>
+        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
+        <div id="mailDropdown" class="dropdown">
+            <a href="{% url 'send_mail' %}">Send Mail</a>
+            <a href="{% url 'receive_mail' %}">Receive Mail</a>
+            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
+            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
+            <a href="{% url 'get_received_emails' %}">Received Mails</a>
+            <a href="{% url 'add_domain' %}">Add Domain</a>
+            <a href="{% url 'verify_domain' %}">Verify Domain</a>
+        </div>
+        <a href="#">AI Optimization</a>
+    </div>
+    <div class="content">
+        <h1>All Leads</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Link</th>
+                    <th>Brand Summary</th>
+                    <th>SEO Score</th>
+                    <th>Tech Stacks</th>
+                    <th>Traffic Analysis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.link }}</td>
+                    <td>{{ lead.brand_summary }}</td>
+                    <td>{{ lead.seo_score }}</td>
+                    <td>{{ lead.tech_stacks }}</td>
+                    <td>{{ lead.traffic_analysis }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

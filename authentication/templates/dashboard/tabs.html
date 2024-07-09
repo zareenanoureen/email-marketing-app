@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Marketing & Cold Calling</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff; /* Light blue background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: #E0F7FA; /* Lightest blue shade */
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 1.5em;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none; /* Remove underline */
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #007bff;
+            margin-bottom: 0.5em;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'dashboard' %}" class="card">
+            <h2>Email Marketing</h2>
+            <p>Click here to explore Email Marketing...</p>
+        </a>
+        <a href="{% url 'profile' %}" class="card">
+            <h2>Cold Calling</h2>
+            <p>Click here to explore Cold Calling...</p>
+        </a>
+    </div>
+</body>
+</html>
