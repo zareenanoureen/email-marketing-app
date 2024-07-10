@@ -27,70 +27,79 @@ similarweb_api_key = os.getenv('SIMILARWEB_API_KEY')
 moz_access_id = os.getenv('MOZ_ACCESS_ID')
 moz_secret_key = os.getenv('MOZ_SECRET_KEY')
 
+def show_leads(request):
+    leads = ShopifyStoresDetails.objects.all()
+    return render(request, 'dashboard/show_leads.html', {'leads': leads})
+
 @login_required
-def all_leads(request):
-    try:
-        # Define the URL to your API
-        api_url = reverse('find-shopify')
-
-        # Call the find_shopify_stores API
-        response = requests.post(request.build_absolute_uri(api_url))
-
-        # Check if API call was successful
-        response.raise_for_status()
-
-        if response.status_code == 200:
-            data = response.json()
-
-            # Fetch data from ShopifyStoresDetails table
-            leads = ShopifyStoresDetails.objects.all()
-
-            # Prepare data for charts and tables
-            lead_data = []
-            for lead in leads:
-                lead_data.append({
-                    'link': lead.link,
-                    'brand_summary': lead.brand_summary,
-                    'seo_score': lead.seo_score,
-                    'tech_stacks': lead.tech_stacks,
-                    'traffic_analysis': lead.traffic_analysis
-                })
-
-            return render(request, 'dashboard/all_leads.html', {'leads': lead_data})
-
-        else:
-            return JsonResponse({'error': f'Failed to fetch leads. API responded with status code {response.status_code}'}, status=500)
-
-    except requests.RequestException as e:
-        # Handle request exceptions
-        return JsonResponse({'error': f'Failed to fetch leads. Error: {str(e)}'}, status=500)
-
-    except Exception as e:
-        # Handle any other unexpected exceptions
-        return JsonResponse({'error': f'Failed to fetch leads. Unexpected error: {str(e)}'}, status=500)
-
-
 @csrf_exempt
 def add_lead(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         contact_no = request.POST.get('contact_no')
-        address = request.POST.get('address')
         industry = request.POST.get('industry')
         location = request.POST.get('location')
+        notes = request.POST.get('notes')
 
-        if name and contact_no and industry and location:
-            lead = Lead.objects.create(
-                name=name,
-                contact_no=contact_no,
-                industry=industry,
-                location=location,
-                address=address
-            )
-            return render(request, 'dashboard/add_lead.html', {'name': lead.name, 'status': 'Lead added'})
-        return JsonResponse({'error': 'Invalid input'}, status=400)
-    else:
-        return render(request, 'dashboard/add_lead.html')
+        if not (name and contact_no and industry and location):
+            return JsonResponse({'error': 'Invalid input'}, status=400)
+
+        query = f'inurl:myshopify.com {name} {industry} {location}'
+        url = f"https://www.googleapis.com/customsearch/v1?key={google_api_key}&cx={search_engine_id}&q={query}"
+
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            results = response.json()
+            urls = results.get('items', [])
+            most_relevant_link = urls[0]['link'] if urls else None
+        except requests.RequestException as e:
+            return JsonResponse({'error': f"Google Custom Search API error: {str(e)}"}, status=500)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid JSON in Google Custom Search API response'}, status=500)
+        except IndexError:
+            return JsonResponse({'error': 'No relevant links found'}, status=404)
+
+        if most_relevant_link:
+            app = FirecrawlApp(api_key=firecrawl_api_key)
+            retry_count = 0
+            while retry_count < 5:
+                try:
+                    scraped_data = app.scrape_url(most_relevant_link)
+                    if scraped_data and 'content' in scraped_data and scraped_data['content']:
+                        content = scraped_data['content']
+                        brand_summary, seo_score, tech_stacks, traffic_analysis = process_website_content(most_relevant_link, content)
+
+                        # Create a new Lead associated with the logged-in user
+                        lead = Lead.objects.create(
+                            user=request.user,
+                            name=name,
+                            contact_no=contact_no,
+                            industry=industry,
+                            location=location,
+                            notes=notes
+                        )
+
+                        # Create ShopifyStoresDetails associated with the created Lead
+                        ShopifyStoresDetails.objects.create(
+                            lead=lead,
+                            link=most_relevant_link,
+                            brand_summary=brand_summary.strip(),
+                            seo_score=seo_score,
+                            tech_stacks='\n'.join(tech_stacks),  # Convert list to newline-separated string
+                            traffic_analysis=traffic_analysis
+                        )
+
+                        success_message = "Lead added successfully"
+                        return render(request, 'dashboard/add_lead.html', {'name': name, 'status': 'Lead added', 'success_message': success_message})
+                except Exception as e:
+                    retry_count += 1
+                    if retry_count == 5:
+                        return JsonResponse({'error': f"Failed to scrape the URL after multiple attempts: {str(e)}"}, status=500)
+        else:
+            return JsonResponse({'error': 'No relevant link found'}, status=404)
+
+    return render(request, 'dashboard/add_lead.html')
 
 @csrf_exempt
 def get_or_update_lead(request, id):
@@ -184,7 +193,7 @@ def add_notes(request, id):
 
 @csrf_exempt
 @login_required
-def find_shopify_stores(request):
+def generate_shopifystoresdetail(request):
     user = request.user
     try:
         user_profile = UserProfile.objects.get(user=user)
@@ -258,15 +267,11 @@ def find_shopify_stores(request):
                     email_contents.append({
                         "link": item['link'],
                         "summary": brand_summary.strip(),
-                        "email_subject": email_subject,
-                        "email_body_html": email_body_html
                     })
                 else:
                     email_contents.append({
                         "link": item['link'],
                         "summary": "No content available",
-                        "email_subject": email_subject,
-                        "email_body_html": "No content available"
                     })
 
                 break
@@ -280,8 +285,6 @@ def find_shopify_stores(request):
                     email_contents.append({
                         "link": item['link'],
                         "summary": f"Error: {str(e)}",
-                        "email_subject": f"Error: {str(e)}",
-                        "email_body_html": f"Error: {str(e)}"
                     })
                     break
             except Exception as e:
@@ -289,8 +292,6 @@ def find_shopify_stores(request):
                 email_contents.append({
                     "link": item['link'],
                     "summary": f"Error: {str(e)}",
-                    "email_subject": f"Error: {str(e)}",
-                    "email_body_html": f"Error: {str(e)}"
                 })
                 break
     leads = ShopifyStoresDetails.objects.all()

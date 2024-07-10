@@ -101,19 +101,29 @@
                 dropdown.style.display = 'none';
             });
         });
+
+        function hideMessage() {
+            var message = document.getElementById('successMessage');
+            if (message) {
+                setTimeout(function() {
+                    message.style.display = 'none';
+                }, 10000);  // 10000 milliseconds = 10 seconds
+            }
+        }
     </script>
 </head>
-<body>
+<body onload="hideMessage()">
     <div class="drawer">
         <div class="heading">Email Marketing</div>
         <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
         <div id="leadsDropdown" class="dropdown">
-            <a href="{% url 'find-shopify' %}">All Leads</a>
+            <a href="{% url 'generate-shopifystoresdetail' %}" onclick="showLoadingMessage()">Generate Leads</a>
+            <a href="{% url 'all-leads' %}">Show Leads</a>
             <a href="{% url 'add-lead' %}">Add Lead</a>
             <a href="{% url 'find-leads' %}">Find Lead</a>
         </div>
-        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
-        <div id="mailDropdown" class="dropdown">
+        <div id="mailManagementDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailManagementDropdown')">Mail Management</div>
+        <div id="mailManagementDropdown" class="dropdown">
             <a href="{% url 'send_mail' %}">Send Mail</a>
             <a href="{% url 'receive_mail' %}">Receive Mail</a>
             <a href="{% url 'reply_to_email' %}">Reply to Email</a>
@@ -126,6 +136,9 @@
     </div>
     <div class="content">
         <h1>Add Lead</h1>
+        {% if success_message %}
+        <p id="successMessage" style="color: green;">{{ success_message }} {{ name }}</p>
+        {% endif %}
         <form method="post" action="{% url 'add-lead' %}">
             {% csrf_token %}
             <div class="mb-3">
@@ -137,16 +150,16 @@
                 <input type="text" class="form-control" id="contact_no" name="contact_no" required>
             </div>
             <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" name="address">
-            </div>
-            <div class="mb-3">
                 <label for="industry" class="form-label">Industry</label>
                 <input type="text" class="form-control" id="industry" name="industry" required>
             </div>
             <div class="mb-3">
                 <label for="location" class="form-label">Location</label>
                 <input type="text" class="form-control" id="location" name="location" required>
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <input type="text" class="form-control" id="notes" name="notes" required>
             </div>
             <button type="submit" class="btn btn-primary">Add Lead</button>
         </form>

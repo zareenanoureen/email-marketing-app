@@ -74,6 +74,12 @@
         .dropdown-btn.active::after {
             transform: rotate(-180deg); /* Rotate arrow when dropdown is active */
         }
+        .loading-message {
+            display: none;
+            font-size: 18px;
+            color: #004085;
+            margin-top: 20px;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -110,6 +116,11 @@
                 });
             }
         });
+
+        function showLoadingMessage() {
+            var loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';
+        }
     </script>
 </head>
 <body>
@@ -117,7 +128,8 @@
         <div class="heading">Email Marketing</div>
         <div class="dropdown-btn">Leads Management</div>
         <div class="dropdown">
-            <a href="{% url 'find-shopify' %}">All Leads</a>
+            <a href="{% url 'generate-shopifystoresdetail' %}" onclick="showLoadingMessage()">Generate Leads</a>
+            <a href="{% url 'all-leads' %}">Show Leads</a>
             <a href="{% url 'add-lead' %}">Add Lead</a>
             <a href="{% url 'find-leads' %}">Find Lead</a>
         </div>
@@ -136,6 +148,7 @@
     <div class="content">
         <h1>Welcome to the Dashboard</h1>
         <p>Select an option from the drawer to get started.</p>
+        <p id="loadingMessage" class="loading-message">Please be patient, your details are being generated. It will take some time.</p>
     </div>
 </body>
 </html>

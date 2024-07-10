@@ -10,11 +10,9 @@ model = "llama3-8b-8192"
 
 def summarize_text(text, chunk_size=500):
     summary = ""
-    
     for i in range(0, len(text), chunk_size):
         chunk = text[i:i + chunk_size]
-        combined_text = summary + " " + chunk
-        
+        combined_text = summary + " " + chunk     
         try:
             chat_completion = client.chat.completions.create(
                 messages=[
@@ -29,7 +27,6 @@ def summarize_text(text, chunk_size=500):
         except Exception as e:
             summary = f"Error in summarization: {str(e)}"
             break  # Exit the loop on error to avoid further calls with the same issue
-    
     return summary
 
 # Helper function to calculate SEO score using Groq API
@@ -47,7 +44,6 @@ def calculate_seo_score(meta, slug):
         seo_score = chat_completion.choices[0].message.content.strip()
     except Exception as e:
         seo_score = f"Error in SEO score calculation: {str(e)}"
-    
     return seo_score
 
 # Helper function to get technology stacks using Groq API
@@ -83,7 +79,6 @@ def get_traffic_analysis(url):
         traffic_analysis = chat_completion.choices[0].message.content.strip()
     except Exception as e:
         traffic_analysis = f"Error in fetching traffic analysis: {str(e)}"
-    
     return traffic_analysis
 
 # Helper function to extract meta and slug from HTML
@@ -97,4 +92,77 @@ def extract_meta_and_slug(html_content):
     slug = slug_match.group(1).split('/')[-1] if slug_match else 'No slug available'
     
     return meta, slug
+
+def process_website_content(url, html_content):
+    meta, slug = extract_meta_and_slug(html_content)
+    chunk_size = 200  # Adjust this chunk size based on your requirements
+    chunks = [html_content[i:i+chunk_size] for i in range(0, len(html_content), chunk_size)]
+    # Step 1: Summarize HTML content
+    brand_summary = ""
+    for chunk in chunks:
+        try:
+            summary_prompt = f"Summarize the following text to create a concise summary about the brand:\n\n{chunk}"
+            summary_response = client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": summary_prompt
+                    }
+                ],
+                model=model,
+            )
+            brand_summary += summary_response.choices[0].message.content.strip() + "\n"
+        except Exception as e:
+            brand_summary = f"Error processing website content for summary: {str(e)}"
+            break  # Exit loop on error
+
+    # Step 2: Calculate SEO score
+    try:
+        seo_prompt = f"Calculate the SEO score based on the following meta and slug information:\nMeta: {meta}\nSlug: {slug}"
+        seo_response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": seo_prompt
+                }
+            ],
+            model=model,
+        )
+        seo_score = seo_response.choices[0].message.content.strip()
+    except Exception as e:
+        seo_score = f"Error processing website content for SEO score: {str(e)}"
+    
+    # Step 3: Identify technology stacks
+    try:
+        tech_prompt = f"Identify the technology stacks used by the website at the following URL: {url}"
+        tech_response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": tech_prompt
+                }
+            ],
+            model=model,
+        )
+        tech_stacks = tech_response.choices[0].message.content.strip().split('\n')
+    except Exception as e:
+        tech_stacks = [f"Error processing website content for technology stacks: {str(e)}"]
+    
+    # Step 4: Provide traffic analysis
+    try:
+        traffic_prompt = f"Provide a traffic analysis for the website at the following URL: {url}"
+        traffic_response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": traffic_prompt
+                }
+            ],
+            model=model,
+        )
+        traffic_analysis = traffic_response.choices[0].message.content.strip()
+    except Exception as e:
+        traffic_analysis = f"Error processing website content for traffic analysis: {str(e)}"
+    
+    return brand_summary, seo_score, tech_stacks, traffic_analysis
 
