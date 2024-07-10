@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -64,4 +64,50 @@
         </a>
     </div>
 </body>
+</html> -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Marketing & Cold Calling Apps</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'authentication/css/tabs.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="card">
+            <div class="card-icon">
+                <img src="{% static 'authentication/images/email-icon.png' %}" alt="Email Marketing Icon">
+            </div>
+            <div class="card-content">
+                <h2>Email Marketing App</h2>
+                <p>Manage and send personalized emails to your leads.</p>
+                <a href="{% url 'dashboard' %}" class="btn btn-navy">Go to Email App</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon">
+                <img src="{% static 'authentication/images/Phone_icon.png' %}" alt="Cold Calling Icon">
+            </div>
+            <div class="card-content">
+                <h2>Cold Calling App</h2>
+                <p>Make and manage calls efficiently with integrated CRM.</p>
+                <a href="{% url 'profile' %}" class="btn btn-navy">Go to Cold Calling App</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'authentication/js/signup.js' %}"></script>
+</body>
 </html>
+
+

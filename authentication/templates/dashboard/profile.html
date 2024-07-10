@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -107,4 +107,44 @@
         </form>
     </div>
 </body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'authentication/css/getting_started.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <div class="content-wrapper">
+            <h2>Getting Started</h2>
+            <p class="description">Let's set up your profile to get started.</p>
+            <form id="profileForm" method="post" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea name="business_description" placeholder="Business Description" rows="4" required></textarea>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="industry" placeholder="Industry" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" name="location" placeholder="Location" required>
+                </div>
+                <button type="submit" class="btn">Save Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{% static 'authentication/js/signup.js' %}"></script>
+</body>
 </html>
+
