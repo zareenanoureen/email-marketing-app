@@ -158,8 +158,7 @@ def find_leads(request):
         Q(industry__icontains=query) |
         Q(location__icontains=query) |
         Q(name__icontains=query) |
-        Q(contact_no=query) |
-        Q(address__icontains=query)
+        Q(contact_no=query)
     )
 
     leads_data = [{
@@ -168,7 +167,6 @@ def find_leads(request):
         'contact_no': lead.contact_no,
         'industry': lead.industry,
         'location': lead.location,
-        'address': lead.address,
         'notes': lead.notes
     } for lead in leads]
     

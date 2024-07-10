@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from .models import CustomUser, UserProfile
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
@@ -68,6 +68,10 @@ def signin(request):
         else:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
     return render(request, 'registration/signin.html')
+
+def signout(request):
+    logout(request)
+    return redirect('/')
 
 
 @csrf_exempt
