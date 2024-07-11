@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'leads',
     'custom_mails',
     'authentication',
+    'ai_optimization',
 ]
 
 MIDDLEWARE = [

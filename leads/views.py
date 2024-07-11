@@ -28,7 +28,7 @@ moz_access_id = os.getenv('MOZ_ACCESS_ID')
 moz_secret_key = os.getenv('MOZ_SECRET_KEY')
 
 def show_leads(request):
-    leads = ShopifyStoresDetails.objects.all()
+    leads = Lead.objects.all()
     return render(request, 'dashboard/show_leads.html', {'leads': leads})
 
 @login_required
@@ -68,30 +68,31 @@ def add_lead(request):
                     scraped_data = app.scrape_url(most_relevant_link)
                     if scraped_data and 'content' in scraped_data and scraped_data['content']:
                         content = scraped_data['content']
-                        brand_summary, seo_score, tech_stacks, traffic_analysis = process_website_content(most_relevant_link, content)
+                        result = process_website_content(most_relevant_link, content)
+
+                        # Parse brand summary
+                        parsed_summary = parse_brand_summary(result['brand_summary'])
 
                         # Create a new Lead associated with the logged-in user
                         lead = Lead.objects.create(
                             user=request.user,
-                            name=name,
+                            link=most_relevant_link,
+                            brand_summary=result['brand_summary'].strip(),
+                            seo_score=result['seo_score'],
+                            tech_stacks='\n'.join(result['tech_stacks']),  # Convert list to newline-separated string
+                            traffic_analysis=result['traffic_analysis'],
+                            name=parsed_summary['Name'] or name,
                             contact_no=contact_no,
                             industry=industry,
                             location=location,
-                            notes=notes
-                        )
-
-                        # Create ShopifyStoresDetails associated with the created Lead
-                        ShopifyStoresDetails.objects.create(
-                            lead=lead,
-                            link=most_relevant_link,
-                            brand_summary=brand_summary.strip(),
-                            seo_score=seo_score,
-                            tech_stacks='\n'.join(tech_stacks),  # Convert list to newline-separated string
-                            traffic_analysis=traffic_analysis
+                            notes=notes,
+                            email=parsed_summary['Email'],
+                            address=parsed_summary['Address'],
+                            phone_number=parsed_summary['Phone Number']
                         )
 
                         success_message = "Lead added successfully"
-                        return render(request, 'dashboard/add_lead.html', {'name': name, 'status': 'Lead added', 'success_message': success_message})
+                        return JsonResponse({'status': 'Lead added', 'success_message': success_message})
                 except Exception as e:
                     retry_count += 1
                     if retry_count == 5:
@@ -241,14 +242,22 @@ def generate_shopifystoresdetail(request):
                     # backlinks = get_backlinks(item['link'])
                     tech_stacks = get_tech_stacks(item['link'])
                     traffic_analysis = get_traffic_analysis(item['link'])
+                    parsed_summary = parse_brand_summary(brand_summary)
 
-                    ShopifyStoresDetails.objects.create(
+                    Lead.objects.create(
+                        user=request.user,
                         link=item['link'],
                         brand_summary=brand_summary.strip(),
                         seo_score=seo_score,
-                        # backlinks=backlinks,
-                        tech_stacks=tech_stacks,
-                        traffic_analysis=traffic_analysis
+                        tech_stacks=tech_stacks,  # Convert list to newline-separated string
+                        traffic_analysis=traffic_analysis,
+                        name=parsed_summary['Name'],
+                        contact_no=parsed_summary['Phone Number'],
+                        industry=industry,
+                        location=location,
+                        email=parsed_summary['Email'],
+                        address=parsed_summary['Address'],
+                        phone_number=parsed_summary['Phone Number']
                     )
 
                     email_subject = f"Exploring Collaboration Opportunities with {item['link']}"
@@ -292,7 +301,7 @@ def generate_shopifystoresdetail(request):
                     "summary": f"Error: {str(e)}",
                 })
                 break
-    leads = ShopifyStoresDetails.objects.all()
+    leads = Lead.objects.all()
 
     # Prepare data for charts and tables
     lead_data = []
