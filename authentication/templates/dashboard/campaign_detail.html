@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campaign Details</title>
+</head>
+<body>
+    <h1>Campaign: {{ campaign.name }}</h1>
+    <p><strong>Number of Target Leads:</strong> {{ campaign.no_of_target_leads }}</p>
+    <p><strong>Products:</strong> {{ campaign.products }}</p>
+    <p><strong>My Brand:</strong> {{ campaign.my_brand }}</p>
+    
+    <h2>Sent Mails</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Body</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mail in sent_mails %}
+            <tr>
+                <td>{{ mail.subject }}</td>
+                <td>{{ mail.body|truncatewords:20 }}</td>
+                <td><a href="{% url 'sent_mail_detail' mail.id %}">View Mail</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

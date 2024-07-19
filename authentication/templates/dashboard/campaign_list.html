@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campaign List</title>
+</head>
+<body>
+    <h1>All Campaigns</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Number of Target Leads</th>
+                <th>Products</th>
+                <th>My Brand</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+            <tr>
+                <td>{{ campaign.name }}</td>
+                <td>{{ campaign.no_of_target_leads }}</td>
+                <td>{{ campaign.products }}</td>
+                <td>{{ campaign.my_brand }}</td>
+                <td><a href="{% url 'campaign_detail' campaign.id %}">View Details</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

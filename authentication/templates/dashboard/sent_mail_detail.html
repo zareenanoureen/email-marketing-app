@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sent Mail Details</title>
+</head>
+<body>
+    <h1>Mail Subject: {{ sent_mail.subject }}</h1>
+    <p>{{ sent_mail.body|linebreaks }}</p>
+    
+    <h2>Respond to this email</h2>
+    <form method="post" action="{% url 'respond_email' sent_mail.id %}">
+        {% csrf_token %}
+        <textarea name="response" rows="10" cols="50"></textarea><br>
+        <input type="submit" value="Send Response">
+    </form>
+</body>
+</html>
