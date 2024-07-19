@@ -51,6 +51,7 @@ def add_lead(request):
             response = requests.get(url)
             response.raise_for_status()
             results = response.json()
+
             urls = results.get('items', [])
             most_relevant_link = urls[0]['link'] if urls else None
         except requests.RequestException as e:
@@ -65,15 +66,18 @@ def add_lead(request):
             retry_count = 0
             while retry_count < 5:
                 try:
+                    r = requests.get(most_relevant_link)
+                    html_content = r.text
                     scraped_data = app.scrape_url(most_relevant_link)
                     if scraped_data and 'content' in scraped_data and scraped_data['content']:
                         content = scraped_data['content']
-                        result = process_website_content(most_relevant_link, content)
+                        result = process_website_content(most_relevant_link, content, html_content)
 
                         # Parse brand summary
                         parsed_summary = parse_brand_summary(result['brand_summary'])
 
                         # Create a new Lead associated with the logged-in user
+                    if parsed_summary['Email'] and parsed_summary['Phone Number']:
                         lead = Lead.objects.create(
                             user=request.user,
                             link=most_relevant_link,
@@ -93,6 +97,17 @@ def add_lead(request):
 
                         success_message = "Lead added successfully"
                         return JsonResponse({'status': 'Lead added', 'success_message': success_message})
+                    else:
+                        error_message = "Lead has no "
+                        if not parsed_summary['Email']:
+                            error_message += "email"
+                        if not parsed_summary['Email'] and not parsed_summary['Phone Number']:
+                            error_message += " or "
+                        if not parsed_summary['Phone Number']:
+                            error_message += "phone number"
+
+                        return JsonResponse({'status': 'error', 'error_message': error_message})
+
                 except Exception as e:
                     retry_count += 1
                     if retry_count == 5:
@@ -102,54 +117,6 @@ def add_lead(request):
 
     return render(request, 'dashboard/add_lead.html')
 
-@csrf_exempt
-def get_or_update_lead(request, id):
-    try:
-        lead = Lead.objects.get(id=id)
-        
-        if request.method == 'PUT':
-            data = json.loads(request.body)
-            name = data.get('name')
-            contact_no = data.get('contact_no')
-            industry = data.get('industry')
-            location = data.get('location')
-            notes = data.get('notes')
-            address = data.get('address')
-
-            if name:
-                lead.name = name
-            if contact_no:
-                lead.contact_no = contact_no
-            if industry:
-                lead.industry = industry
-            if location:
-                lead.location = location
-            if notes:
-                lead.notes = notes
-            if address:
-                lead.address = address
-
-            lead.save()
-            return JsonResponse({'id': lead.id, 'name': lead.name, 'industry': lead.industry, 'contact_no': lead.contact_no, 'location': lead.location, 'address': lead.address, 'status': 'Lead updated'})
-
-        elif request.method == 'GET':
-            # Handle GET request to retrieve lead details
-            lead_data = {
-                'id': lead.id,
-                'name': lead.name,
-                'contact_no': lead.contact_no,
-                'industry': lead.industry,
-                'location': lead.location,
-                'notes': lead.notes,
-                'address': lead.address
-            }
-            return JsonResponse(lead_data)
-
-        else:
-            return HttpResponse(status=405)  # Method Not Allowed for other methods
-    
-    except Lead.DoesNotExist:
-        return JsonResponse({'error': 'Lead not found'}, status=404)
 
 @csrf_exempt
 def find_leads(request):
@@ -230,12 +197,14 @@ def generate_shopifystoresdetail(request):
         retry_count = 0
         while retry_count < 5:
             try:
+                r = requests.get(item['link'])
+                url_html_content = r.text
                 scraped_data = app.scrape_url(item['link'])
                 if scraped_data and 'content' in scraped_data and scraped_data['content']:
                     content = scraped_data['content']
                     brand_summary = summarize_text(content)
                     # Extract meta and slug from HTML content
-                    meta, slug = extract_meta_and_slug(content)
+                    meta, slug = extract_meta_and_slug(url_html_content)
                     # Score the website for SEO
                     seo_score = calculate_seo_score(meta, slug)
                     # Get backlinks, tech stacks, and traffic analysis
@@ -275,7 +244,7 @@ def generate_shopifystoresdetail(request):
                         "link": item['link'],
                         "summary": brand_summary.strip(),
                     })
-                else:
+                else: 
                     email_contents.append({
                         "link": item['link'],
                         "summary": "No content available",
@@ -307,6 +276,7 @@ def generate_shopifystoresdetail(request):
     lead_data = []
     for lead in leads:
         lead_data.append({
+            'name': lead.name,
             'link': lead.link,
             'brand_summary': lead.brand_summary,
             'seo_score': lead.seo_score,

@@ -18,7 +18,7 @@ def summarize_text(text, chunk_size=1000):
                 messages=[
                     {
                         "role": "user",
-                        "content": f"Summarize the following text to create a concise summary about the brand. The summary must include key details such as name, address, phone number, email, and unique selling points. If any details are not found, write 'not provided'. Format the summary in a list. For example: \n\nName: Scents N Stories\nAddress: Lahore\nPhone Number: +92 311 100 7862\nEmail: test@gmail.com\n\nUnique Selling Points: [Unique points about the brand]\n\nText to summarize: {combined_text}",
+                        "content": f"Summarize the following text to create a concise summary about the brand. The summary must include key details such as name, address, phone number, email, and unique selling points. It should get Email and Phone Number with country code but If any details are not found, provide '' or None. Format the summary in a list. For example: \n\nName: Scents N Stories\nAddress: Lahore\nPhone Number: +92 311 100 7862\nEmail: test@gmail.com\n\nUnique Selling Points: [Unique points about the brand]\n\nText to summarize: {combined_text}",
                     }
                 ],
                 model="llama3-8b-8192",
@@ -117,19 +117,11 @@ def extract_meta_and_slug_soup(html_content):
     
     return meta, slug
 
-# Function to process website content
-def process_website_content(url, html_content):
-    print(html_content)
+def process_website_content(url, markdown_content, html_content):
     meta, slug = extract_meta_and_slug_soup(html_content)
-    print('hehe=>new',meta, slug)
-    # Summarize HTML content
-    brand_summary = summarize_text(html_content)
-    print(brand_summary)
+    brand_summary = summarize_text(markdown_content)
     tech_stacks = get_tech_stacks(url)
-    # Calculate SEO score
     seo_score = calculate_seo_score(meta, slug)
-    
-    # Provide traffic analysis
     traffic_analysis = get_traffic_analysis(url)
     
     return {
@@ -143,11 +135,11 @@ def process_website_content(url, html_content):
 def parse_brand_summary(summary):
     # Define patterns for extracting key-value pairs
     patterns = {
-        'Name': r'Name:\s*(.*?)\n',
-        'Phone Number': r'Phone Number:\s*([+0-9\s()-]+)\n',
-        'Email': r'Email:\s*(.*?)\n',
-        'Address': r'Address:\s*(.*?)\n',
-        'Unique Selling Points': r'Unique Selling Points:\s*(.*)'
+        'Name': r'\*\*Name:\*\*\s*(.*?)\n',
+        'Phone Number': r'\*\*Phone Number:\*\*\s*([+]?[\d\s()-\.]+)',
+        'Email': r'\*\*Email:\*\*\s*(.*?)\n',
+        'Address': r'\*\*Address:\*\*\s*(.*?)\n',
+        'Unique Selling Points': r'\*\*Unique Selling Points:\*\*\s*((?:\*\s.*\n?)*)'
     }
 
     # Initialize variables to store extracted values

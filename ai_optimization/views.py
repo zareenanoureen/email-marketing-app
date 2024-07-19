@@ -42,6 +42,6 @@ def generate_email_template(request):
 def view_template(request):
     try:
         email_template = EmailTemplate.objects.latest('created_at')
-        return render(request, 'dashboard/view_template.html', {'template_content': email_template.content})
+        return render(request, 'dashboard/view_template.html', {'template_content': email_template})
     except EmailTemplate.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'No template found.'})
