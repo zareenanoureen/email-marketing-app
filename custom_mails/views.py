@@ -1,15 +1,20 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from .models import SentEmail, ReceivedEmail
 from django.views.decorators.csrf import csrf_exempt
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import os
+from django.urls import reverse
+import logging
 import requests
 from django.template.loader import render_to_string
 from dotenv import load_dotenv
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
+SENDGRID_API_BASE_URL = "https://api.sendgrid.com/v3"
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 FROM_EMAIL = 'info@learnity.store'
 
@@ -37,17 +42,29 @@ def send_mail(request):
             SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
         )
 
+        if recipient:
+         recipient_name = extract_name_from_email(recipient)
+
         if status_code == 202:
             # Assuming you have a SentEmail model defined
             SentEmail.objects.create(
                 recipient=recipient,
                 subject=subject,
-                html_body=html_body
+                html_body=html_body,
+                recipient_name=recipient_name,
             )
             return HttpResponse("Email sent successfully", status=202)
         else:
             return HttpResponse(response_body, status=status_code)
     return render(request, 'dashboard/send_mail.html')
+
+
+def extract_name_from_email(email):
+    name_part = email.split('@')[0]
+    # Optionally replace dots or underscores with spaces and capitalize
+    name = name_part.replace('.', ' ').replace('_', ' ').title()
+    return name
+
 
 @csrf_exempt
 def receive_mail(request):
@@ -55,7 +72,11 @@ def receive_mail(request):
         sender = request.POST.get('sender')
         subject = request.POST.get('subject')
         content = request.POST.get('content')
+        if sender:
+         sender_name = extract_name_from_email(sender)
+        
 
+        
         if not content:
             return HttpResponse("Email content is empty", status=400)
 
@@ -68,32 +89,44 @@ def receive_mail(request):
         ReceivedEmail.objects.create(
             sender=sender,
             subject=subject,
-            content=content
+            content=content,
+            sender_name = sender_name
         )
 
         return HttpResponse(html_content)
 
     return render(request, 'dashboard/receive_mail.html')
 
-@csrf_exempt
-def reply_to_email(request):
+def reply_email(request, email_id):
+    original_email = get_object_or_404(ReceivedEmail, id=email_id)
+    
     if request.method == 'POST':
-        sender = request.POST.get('sender')
         subject = request.POST.get('subject')
-        content = request.POST.get('content')
-        recipient = request.POST.get('recipient')
-
-        reply_content = f"Reply to: {sender}\n\n{content}"
+        html_body = request.POST.get('html_body')
+        recipient = original_email.sender
 
         status_code, response_body, response_headers = send_email(
-            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, reply_content
+            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
         )
+        if recipient:
+         recipient_name = extract_name_from_email(recipient)
 
         if status_code == 202:
-            return HttpResponse("Reply sent successfully", status=202)
-        else:
-            return HttpResponse(response_body, status=status_code)
-    return render(request, 'dashboard/reply_email.html')
+        # Save the replied email in SentEmail model
+            reply_email = SentEmail.objects.create(
+                subject=subject,
+                html_body=html_body,
+                recipient=recipient,
+                recipient_name=recipient_name
+                
+            )
+            return HttpResponse("Email sent successfully", status=202)
+        
+    context = {
+        'original_email': original_email,
+        'reply_subject': f"Re: {original_email.subject}",
+    }
+    return render(request, 'dashboard/reply_email.html', context)
 
 @csrf_exempt
 def add_domain(request):
@@ -138,8 +171,96 @@ def verify_domain(request):
 
 def get_sent_emails(request):
     sent_emails = SentEmail.objects.all()
-    return render(request, 'dashboard/sent_emails.html', {'sent_emails': sent_emails})
+    total_emails = SentEmail.objects.count()
+    return render(request, 'dashboard/sent_emails.html', {'sent_emails': sent_emails, 'total_emails': total_emails})
 
 def get_received_emails(request):
     received_emails = ReceivedEmail.objects.all()
-    return render(request, 'dashboard/received_emails.html', {'received_emails': received_emails})
+    total_emails = ReceivedEmail.objects.count()
+    return render(request, 'dashboard/received_emails.html', {'received_emails': received_emails, 'total_emails': total_emails})
+
+
+def configure_inbound_parse_settings(domain, url):
+    parse_url = f"{SENDGRID_API_BASE_URL}/user/webhooks/parse/settings"
+    headers = {
+        "Authorization": f"Bearer {SENDGRID_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "hostname": domain,
+        "url": url,
+        "spam_check": True,  # Set based on your preference
+        "send_raw": False,  # Set based on your preference
+        "inbound_security": []  # Add any inbound security settings if required
+    }
+    response = requests.post(parse_url, headers=headers, json=payload)
+    return response.json()
+
+@csrf_exempt
+def configure_receive_endpoint_view(request):
+    if request.method == 'POST':
+        try:
+            domain = request.POST.get('domain')
+            endpoint_url = request.POST.get('endpoint_url')
+            
+            if not (domain and endpoint_url):
+                return render(request, 'configure_receive_endpoint.html', {
+                    'error': 'Domain and endpoint URL are required.'
+                })
+
+            result = configure_inbound_parse_settings(domain, endpoint_url)
+            print(result)
+            return render(request, 'dashboard/configure_receive_endpoint.html', {
+                'message': 'Inbound parse configuration result.',
+                'result': result
+            })
+        
+        except Exception as e:
+            logger.error("Error in configure_receive_endpoint_view: %s", str(e))
+            return render(request, 'dashboard/configure_receive_endpoint.html', {
+                'error': str(e)
+            })
+    else:
+        return render(request, 'dashboard/configure_receive_endpoint.html')
+    
+def read_email(request, email_id):
+    email = get_object_or_404(ReceivedEmail, id=email_id)
+    return render(request, 'dashboard/read_email.html', {'email': email})
+
+
+def read_sent_email(request, email_id):
+    email = get_object_or_404(SentEmail, id=email_id)
+    return render(request, 'dashboard/read_sent_mail.html', {'email': email})
+
+
+
+
+
+def reply_sent_email(request, email_id):
+    original_email = get_object_or_404(SentEmail, id=email_id)
+    
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        html_body = request.POST.get('html_body')
+        recipient = original_email.recipient
+
+        status_code, response_body, response_headers = send_email(
+            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
+        )
+        if recipient:
+         sender_name = extract_name_from_email(recipient)
+        if status_code == 202:
+        # Save the replied email in SentEmail model
+            reply_email = SentEmail.objects.create(
+                subject=subject,
+                html_body=html_body,
+                recipient=recipient,
+                
+            )
+            return HttpResponse("Email sent successfully", status=202)
+        
+    context = {
+        'original_email': original_email,
+        'reply_subject': f"Re: {original_email.subject}",
+    }
+    return render(request, 'dashboard/reply_sent_mail.html', context)

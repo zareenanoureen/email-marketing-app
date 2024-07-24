@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 def signup(request):
+    print(request.method)
     if request.method == 'POST':
         try:
             email = request.POST.get('email')
@@ -21,20 +22,21 @@ def signup(request):
             phone_number = request.POST.get('phone_number')
             password = request.POST.get('password')
             confirm_password = request.POST.get('confirm_password')
+            print(email, username)
             if password != confirm_password:
                 return error_response('Passwords do not match')
 
             if CustomUser.objects.filter(email=email).exists():
                 return error_response('Email already exists')
 
-            CustomUser.objects.create_user(email=email, username=username, phone_number=phone_number, password=password, is_active=True)
-
-            return render(request, 'registration/signin.html')
+            user = CustomUser.objects.create_user(email=email, username=username, phone_number=phone_number, password=password, is_active=True)
+            print(user)
+            return render(request, 'registration/default/auth-login.html')
         except DatabaseError as e:
             return JsonResponse({'error': f'Database error: {e}'}, status=500)
         except Exception as e:
             return JsonResponse({'error': f'An error occurred: {e}'}, status=500)
-    return render(request, 'registration/signup.html')
+    return render(request, 'registration/default/auth-register.html')
 
 
 @csrf_exempt
@@ -60,14 +62,14 @@ def signin(request):
                 # }
                 # token = get_tokens_for_user(user)
                 if profile and profile.business_description and profile.industry and profile.location:
-                    return redirect(reverse('tabs_page'))  # Redirect to tabs page if profile is complete
+                    return redirect(reverse('dashboard'))  # Redirect to tabs page if profile is complete
                 else:
                     return redirect(reverse('profile'))
             else:
                 return JsonResponse({'error': 'Account is not activated yet!'}, status=401)
         else:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
-    return render(request, 'registration/signin.html')
+    return render(request, 'registration/default/auth-login.html')
 
 def signout(request):
     logout(request)
@@ -90,11 +92,7 @@ def profile(request):
             location=location
         )
         
-        # Optionally, you can redirect to another page after saving
-        return redirect('tabs_page')  # Redirect to the same profile page after saving
-        
-    # Render the profile page with a form to add details
-    return render(request, 'dashboard/profile.html')
+        return render(request, 'dashboard/profile.html')
     
 def tabs_page(request):
     return render(request, 'dashboard/tabs.html')

@@ -36,7 +36,7 @@ def calculate_seo_score(meta, slug):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Calculate the SEO score based on the following meta and slug information:\nMeta: {meta}\nSlug: {slug}, Just Provide me the Scores with headings",
+                    "content": f"Calculate the SEO score based on the following meta and slug information:\nMeta: {meta}\nSlug: {slug}, Just Provide me the Scores with headings, don't add any extra details or don't make it lengthy.",
                 }
             ],
             model=model,
@@ -53,7 +53,7 @@ def get_tech_stacks(url):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Identify the technology stacks used by the website at the following URL: {url}, Just give me the names of Technology stacks.",
+                    "content": f"Identify the technology stacks used by the website at the following URL: {url}, Just give me the names of Technology stacks. Don't add any extra details or don't make it lengthy.",
                 }
             ],
             model=model,
@@ -71,7 +71,7 @@ def get_traffic_analysis(url):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Provide a traffic analysis for the website at the following URL: {url}. Please provide me concise ad accurate traffic analysis",
+                    "content": f"Provide a traffic analysis for the website at the following URL: {url}. Please provide me concise ad accurate traffic analysis,  don't add any extra details or don't make it lengthy.",
                 }
             ],
             model=model,

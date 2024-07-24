@@ -1,26 +1,61 @@
-<!-- create_campaign.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Campaign</title>
-</head>
-<body>
-    <h1>Create Campaign</h1>
-    <form method="post" action="{% url 'create_campaign' %}">
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+    <div class="content">
+        
+        <h4 class="modal-title" id="myCenterModalLabel">Create a Campaign</h4>
+    
+        {% if success_message %}
+        <p id="successMessage" style="color: green;">{{ success_message }} {{ name }}</p>
+        {% endif %}
+            <div class="mb-3">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                    
+                        <div class="modal-header badge-danger">
+                            <h4 class="modal-title" id="myCenterModalLabel">Create a Campaign</h4>
+                        </div>
+                <div class="modal-body p-4">
+                    <form method="post" action="{% url 'create_campaign' %}">
         {% csrf_token %}
-        <label for="name">Campaign Name:</label><br>
-        <input type="text" id="name" name="name"><br>
-        
-        <label for="no_of_target_leads">Number of Target Leads:</label><br>
-        <input type="number" min="0" id="no_of_target_leads" name="no_of_target_leads"><br>
-        
-        <label for="products">Products:</label><br>
-        <textarea id="products" name="products" rows="4" cols="50"></textarea><br>
-        
-        <label for="my_brand">My Brand:</label><br>
-        <input type="text" id="my_brand" name="my_brand"><br><br>
-        
-        <button type="submit">Create Campaign</button>
-    </form>
-</body>
-</html>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="name">Campaign Name:</label>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Name of your campaign" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="no_of_target_leads">Number of Target Leads:</label>
+                                <input type="number" class="form-control" min="0" id="no_of_target_leads" name="no_of_target_leads" placeholder="How many leads you want to target?">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="products">Products:</label>
+                                <textarea id="products" class="form-control" name="products" rows="8" cols="50" placeholder="Any specific products or services you are offering?"></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="my_brand">My Brand:</label>
+                                <input type="text" class="form-control" id="my_brand" name="my_brand" placeholder="Name of your brand">
+                            </div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success waves-effect waves-light">Create Campaign</button>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+  
+
+{% endblock %}
+
+
+

@@ -1,145 +1,235 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sent Emails</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
     <style>
-        body {
-            font-family: Arial, sans-serif;
+    .inbox-container {
             display: flex;
-            margin: 0;
-        }
-        .drawer {
-            width: 250px;
-            background-color: #d9edf7;
-            color: #004085;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        width: 100%;
             height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000; /* Ensure drawer is above other content */
-            overflow-y: auto; /* Allow scrolling if drawer content exceeds viewport height */
+        /* Full viewport height */
         }
-        .drawer a, .drawer .dropdown-btn {
-            color: #004085;
-            text-decoration: none;
-            margin-bottom: 10px;
+
+    .navigation {
+        flex: 0 0 200px;
+        /* Fixed width for navigation */
             padding: 10px;
-            width: 100%;
-            text-align: left;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: block; /* Ensure links are block-level */
-        }
-        .drawer a:hover, .drawer .dropdown-btn:hover {
-            background-color: #bfefff;
-        }
-        .content {
+        background-color: #f8f9fa;
+        /* Light background color */
+    }
+
+    .email-list {
+        flex: 1;
+        /* Takes remaining space */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .email-toolbar {
+        display: flex;
+        padding: 10px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .message-list {
             flex: 1;
-            padding: 40px;
-            margin-left: 250px; /* Adjust for drawer width */
+        /* Takes remaining space */
+        overflow-y: auto;
+        /* Allows vertical scrolling */
+        padding: 10px;
+        background-color: #ffffff;
+        margin: 0;
         }
-        .heading {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #004085;
-        }
-        .dropdown {
-            display: none;
-            flex-direction: column;
-            padding-left: 10px;
-        }
-        .dropdown a {
-            margin-bottom: 5px;
-            padding-left: 20px;
-            background-color: #e9f7fc;
-        }
-        .drawer .dropdown-btn {
+
+    .message-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .col-mail {
+        flex: 1;
+    }
+
+    .col-mail-1 {
+        display: flex;
+        align-items: center;
+    }
+
+    .col-mail-2 {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #e9f7fc;
-        }
-        .drawer .dropdown-btn::after {
-            content: '▼';
-            font-size: 12px;
-            margin-left: auto;
-            transition: transform 0.3s;
-        }
-        .drawer .dropdown-btn.active::after {
-            transform: rotate(-180deg);
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #e9f7fc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        li strong {
-            color: #004085;
         }
     </style>
-</head>
-<body>
-    <div class="drawer">
-        <div class="heading">Email Marketing</div>
-        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
-        <div id="leadsDropdown" class="dropdown">
-            <a href="#">All Leads</a>
-            <a href="#">Add Lead</a>
-            <a href="#">Find Lead</a>
-            <a href="#">Update Lead</a>
-            <a href="#">Add Notes</a>
-        </div>
-        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
-        <div id="mailDropdown" class="dropdown">
-            <a href="{% url 'send_mail' %}">Send Mail</a>
-            <a href="{% url 'receive_mail' %}">Receive Mail</a>
-            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
-            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
-            <a href="{% url 'get_received_emails' %}">Received Mails</a>
-            <a href="{% url 'add_domain' %}">Add Domain</a>
-            <a href="{% url 'verify_domain' %}">Verify Domain</a>
-        </div>
-        <a href="#">AI Optimization</a>
-    </div>
+<!-- ============================================================== -->
+<!-- Start Page Content here -->
+<!-- ============================================================== -->
+
+<div class="content-page">
     <div class="content">
-        <h1>Sent Emails</h1>
-        <ul>
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+
+                        </div>
+                        <h4 class="page-title">Inbox</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+                <!-- Right Sidebar -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-box">
+                            <!-- Left sidebar -->
+                            <div class="inbox-leftbar">
+                                <h4 class="logo-lg-text-light font-weight-bold">Navigation</h4>
+                                <div class="mail-list mt-4">
+                                    <a href="{% url 'send_mail' %}"
+                                        class="btn btn-success btn-block waves-effect waves-light">Compose an Email</a>
+                                    <a href="{% url 'get_received_emails' %}"
+                                        class="btn btn-danger btn-block waves-effect waves-light">Inbox</a>
+                                    <a href="{% url 'get_sent_emails' %}"
+                                        class="btn btn-success btn-block waves-effect waves-light">Sent Mails</a>
+                                </div>
+                            </div>
+
+                            <!-- End Left sidebar -->
+
+                            <div class="inbox-rightbar">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-light waves-effect"><i
+                                            class="mdi mdi-archive font-18"></i></button>
+                                    <button type="button" class="btn btn-sm btn-light waves-effect"><i
+                                            class="mdi mdi-alert-octagon font-18"></i></button>
+                                    <button type="button" class="btn btn-sm btn-light waves-effect"><i
+                                            class="mdi mdi-delete-variant font-18"></i></button>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect"
+                                        data-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-folder font-18"></i>
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <span class="dropdown-header">Move to</span>
+                                        <a class="dropdown-item" href="javascript: void(0);">Social</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Promotions</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Updates</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Forums</a>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect"
+                                        data-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-label font-18"></i>
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <span class="dropdown-header">Label as:</span>
+                                        <a class="dropdown-item" href="javascript: void(0);">Updates</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Social</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Promotions</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Forums</a>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect"
+                                        data-toggle="dropdown" aria-expanded="false">
+                                        <i class="mdi mdi-dots-horizontal font-18"></i> More
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <span class="dropdown-header">More Option :</span>
+                                        <a class="dropdown-item" href="javascript: void(0);">Mark as Unread</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Add to Tasks</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Add Star</a>
+                                        <a class="dropdown-item" href="javascript: void(0);">Mute</a>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <ul class="message-list">
             {% for email in sent_emails %}
-            <li>
-                <strong>To:</strong> {{ email.recipient }}<br>
-                <strong>Subject:</strong> {{ email.subject }}<br>
-                <strong>Body:</strong> {{ email.html_body }}<br>
+                                        <li class="unread">
+                                            <a href="{% url 'read_sent_mail' email.id %}" class="email-link">
+                                                <div class="col-mail col-mail-1">
+                                                    <div class="checkbox-wrapper-mail">
+                                                        <input type="checkbox" id="chk{{ forloop.counter }}">
+                                                        <label for="chk{{ forloop.counter }}" class="toggle"></label>
+                                                    </div>
+                                                    <span class="star-toggle far fa-star text-warning"></span>
+                                                    <span class="title">
+                                                        me, {{ email.recipient_name }}
+                                                    </span>
+                                                </div>
+                                                <div class="col-mail col-mail-2">
+                                                    <span class="subject">
+                                                        {{ email.subject }} &nbsp;&ndash;&nbsp;
+                                                        <span class="teaser">{{ email.content }}</span>
+                                                    </span>
+                                                    <div class="date">{{ email.sent_at|date:"F j, Y" }}</div>
+                                                </div>
+                                            </a>
             </li>
             {% endfor %}
         </ul>
     </div>
 
-    <script>
-        function toggleDropdown(id) {
-            var dropdown = document.getElementById(id);
-            var dropdownBtn = document.getElementById(id + 'Btn');
-            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-                dropdown.style.display = 'block';
-                dropdownBtn.classList.add('active');
-            } else {
-                dropdown.style.display = 'none';
-                dropdownBtn.classList.remove('active');
-            }
-        }
-    </script>
+
+
+                                <!-- end .mt-4 -->
+
+                                <div class="row">
+                                    <div class="col-7 mt-1">
+                                        Showing {{ total_emails }}
+                                    </div> <!-- end col-->
+                                </div>
+                                <!-- end row-->
+                            </div>
+                            <!-- end inbox-rightbar-->
+
+                            <!-- <div class="clearfix"></div> -->
+                        </div> <!-- end card-box -->
+
+                    </div> <!-- end Col -->
+                </div><!-- End row -->
+
+
+
+        </div> <!-- content -->
+
+
+
+
+
+
+    </div>
+    <!-- END wrapper -->
+
+
+
+    <!-- Inbox init -->
+    <script src="{% static 'authentication/assets/js/pages/inbox.js' %}"></script>
+
+    <!-- App js-->
+    <script src="{% static '/assets/js/app.min.js' %}"></script>
+
 </body>
+
+    <!-- Mirrored from coderthemes.com/ubold/layouts/default/email-inbox.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 10 Sep 2020 17:26:16 GMT -->
+
 </html>
+    {% endblock %}

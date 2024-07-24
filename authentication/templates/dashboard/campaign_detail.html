@@ -1,32 +1,116 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Campaign Details</title>
-</head>
-<body>
-    <h1>Campaign: {{ campaign.name }}</h1>
-    <p><strong>Number of Target Leads:</strong> {{ campaign.no_of_target_leads }}</p>
-    <p><strong>Products:</strong> {{ campaign.products }}</p>
-    <p><strong>My Brand:</strong> {{ campaign.my_brand }}</p>
-    
-    <h2>Sent Mails</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Subject</th>
-                <th>Body</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Campaign Details{% endblock %}
+{% block content %}
+
+<style>
+.card {
+    width: 100%;
+}
+
+.table td.text-right {
+    text-align: right;
+}
+</style>
+<div class="content-page">
+    <div class="content">
+
+        <!-- Start Content-->
+        <div class="container-fluid">
+            
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                           
+                        </div>
+                        <h4 class="page-title">Campaign Detail</h4>
+                    </div>
+                </div>
+            </div>     
+            <!-- end page title --> 
+
+            <div class="row">
+                <div class="col-12">
+                    <!-- project card -->
+                    <div class="card d-block">
+                        <div class="card-body">
+
+                            <h4>Campaign: {{ campaign.name }}</h4>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <!-- assignee -->
+                                    <p class="mt-2 mb-1 text-muted">No. of Target Leads</p>
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h5 class="mt-1 font-size-14">
+                                                {{ campaign.no_of_target_leads }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <!-- end assignee -->
+                                </div> <!-- end col -->
+
+                                <div class="col-md-4">
+                                    <!-- start due date -->
+                                    <p class="mt-2 mb-1 text-muted">Products:</p>
+                                    <div class="media">
+                                        <i class='mdi mdi-briefcase-check-outline font-18 text-success mr-1'></i>
+                                        <div class="media-body">
+                                            <h5 class="mt-1 font-size-14">
+                                                {{ campaign.products }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <!-- end due date -->
+                                </div>
+
+                                <div class="col-md-4">
+                                    <!-- start due date -->
+                                    <p class="mt-2 mb-1 text-muted">My Brand:</p>
+                                    <div class="media">
+                                        <i class='mdi mdi-calendar-month-outline font-18 text-success mr-1'></i>
+                                        <div class="media-body">
+                                            <h5 class="mt-1 font-size-14">
+                                                {{ campaign.my_brand }}
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <!-- end due date -->
+                                </div> <!-- end col -->
+                            </div> <!-- end row -->
+
+                            <h5 class="mt-3">Sent Mails:</h5>
+
+                            <table class="table">
         <tbody>
             {% for mail in sent_mails %}
             <tr>
-                <td>{{ mail.subject }}</td>
+                                        <td><strong>{{ mail.subject }}</strong></td>
                 <td>{{ mail.body|truncatewords:20 }}</td>
-                <td><a href="{% url 'sent_mail_detail' mail.id %}">View Mail</a></td>
+                                        <td class="text-right">
+                                            <a href="{% url 'sent_mail_detail' mail.id %}" class="btn btn-primary waves-effect waves-light">View Mail</a>
+                                        </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col -->
+            </div> <!-- end row -->
+
+        </div>
+    </div>
+</div>
+
+<!-- Plugins js -->
+<script src="{% static 'authentication/assets/libs/dropzone/min/dropzone.min.js' %}"></script>
+
+<!-- App js -->
+<script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
+
+{% endblock %}

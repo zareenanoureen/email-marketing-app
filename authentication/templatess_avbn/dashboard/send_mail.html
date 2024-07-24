@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Mail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff; /* Very light blue background */
+        }
+        .drawer {
+            width: 250px;
+            background-color: #d9edf7; /* Lightest blue color for the drawer */
+            color: #004085; /* Dark blue text color */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .drawer a, .drawer .dropdown-btn {
+            color: #004085; /* Dark blue text color */
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .drawer a:hover, .drawer .dropdown-btn:hover {
+            background-color: #bfefff; /* Lighter shade of blue for hover effect */
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+            background-color: #ffffff; /* White background for content area */
+            overflow-y: auto;
+        }
+        .heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #004085; /* Dark blue color for heading */
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #e9f7fc; /* Very light blue background */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input[type="email"],
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        button[type="submit"] {
+            background-color: #007bff; /* Blue button color */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        .dropdown {
+            display: none;
+            flex-direction: column;
+            padding-left: 10px;
+            margin-top: 10px; /* Adjusted margin for spacing */
+        }
+        .dropdown a {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            background-color: #e9f7fc; /* Very light blue background for dropdown items */
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .dropdown a:hover {
+            background-color: #d3edf8; /* Lighter shade of blue on hover */
+        }
+        .dropdown-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9f7fc; /* Very light blue background for dropdown button */
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .dropdown-btn::after {
+            content: '▼';
+            font-size: 12px;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        .dropdown-btn.active::after {
+            transform: rotate(-180deg);
+        }
+    </style>
+    <script>
+        function toggleDropdown(id) {
+            var dropdown = document.getElementById(id);
+            var dropdownBtn = document.getElementById(`${id}Btn`);
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'flex';
+                dropdownBtn.classList.add('active');
+            } else {
+                dropdown.style.display = 'none';
+                dropdownBtn.classList.remove('active');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="drawer">
+        <div class="heading">Email Marketing</div>
+        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
+        <div id="leadsDropdown" class="dropdown">
+            <a href="#">All Leads</a>
+            <a href="#">Add Lead</a>
+            <a href="#">Find Lead</a>
+            <a href="#">Update Lead</a>
+            <a href="#">Add Notes</a>
+        </div>
+        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
+        <div id="mailDropdown" class="dropdown">
+            <a href="{% url 'send_mail' %}">Send Mail</a>
+            <a href="{% url 'receive_mail' %}">Receive Mail</a>
+            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
+            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
+            <a href="{% url 'get_received_emails' %}">Received Mails</a>
+            <a href="{% url 'add_domain' %}">Add Domain</a>
+            <a href="{% url 'verify_domain' %}">Verify Domain</a>
+            <a href="{% url 'configure_receive_endpoint' %}">Configure Domain</a>
+        </div>
+        <a href="#">AI Optimization</a>
+    </div>
+    <div class="content">
+        <h1>Send Mail</h1>
+        <div class="form-container">
+            <form method="post" action="{% url 'send_mail' %}">
+                {% csrf_token %}
+                <label for="recipient">Recipient:</label>
+                <input type="email" id="recipient" name="recipient" required><br><br>
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required><br><br>
+                <label for="html_body">Body:</label><br>
+                <textarea id="html_body" name="html_body" rows="10" required></textarea><br><br>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

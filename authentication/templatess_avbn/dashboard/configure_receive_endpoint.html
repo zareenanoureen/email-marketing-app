@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Receive Endpoint</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            margin: 0;
+        }
+        .drawer {
+            width: 250px;
+            background-color: #d9edf7;
+            color: #004085;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .drawer a, .drawer .dropdown-btn {
+            color: #004085;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+        }
+        .drawer a:hover, .drawer .dropdown-btn:hover {
+            background-color: #bfefff;
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+            margin-left: 250px;
+        }
+        .heading {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #004085;
+        }
+        .dropdown {
+            display: none;
+            flex-direction: column;
+            padding-left: 10px;
+        }
+        .dropdown a {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            background-color: #e9f7fc;
+        }
+        .drawer .dropdown-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #e9f7fc;
+        }
+        .drawer .dropdown-btn::after {
+            content: '▼';
+            font-size: 12px;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        .drawer .dropdown-btn.active::after {
+            transform: rotate(-180deg);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #004085;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #004085;
+            border-color: #004085;
+        }
+        .btn-primary:hover {
+            background-color: #002d66;
+            border-color: #002d66;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="drawer">
+        <div class="heading">Email Marketing</div>
+        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
+        <div id="leadsDropdown" class="dropdown">
+            <a href="#">All Leads</a>
+            <a href="#">Add Lead</a>
+            <a href="#">Find Lead</a>
+            <a href="#">Update Lead</a>
+            <a href="#">Add Notes</a>
+        </div>
+        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
+        <div id="mailDropdown" class="dropdown">
+            <a href="{% url 'send_mail' %}">Send Mail</a>
+            <a href="{% url 'receive_mail' %}">Receive Mail</a>
+            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
+            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
+            <a href="{% url 'get_received_emails' %}">Received Mails</a>
+            <a href="{% url 'add_domain' %}">Add Domain</a>
+            <a href="{% url 'verify_domain' %}">Verify Domain</a>
+            <a href="{% url 'configure_receive_endpoint' %}">Configure Domain</a>
+        </div>
+        <a href="#">AI Optimization</a>
+    </div>
+    <div class="content">
+        <h1>Configure Receive Endpoint</h1>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% elif message %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+            <pre>{{ result|json_script:"result" }}</pre>
+        {% endif %}
+        <form id="configureReceiveEndpointForm" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="domain">Domain</label>
+                <input type="text" id="domain" name="domain" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="endpoint_url">Endpoint URL</label>
+                <input type="url" id="endpoint_url" name="endpoint_url" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Configure</button>
+        </form>
+    </div>
+    <script>
+        function toggleDropdown(id) {
+            var dropdown = document.getElementById(id);
+            var dropdownBtn = document.getElementById(id + 'Btn');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+                dropdownBtn.classList.add('active');
+            } else {
+                dropdown.style.display = 'none';
+                dropdownBtn.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

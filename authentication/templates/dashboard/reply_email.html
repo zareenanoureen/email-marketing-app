@@ -1,165 +1,191 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reply to Email</title>
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+ <!-- Summernote css -->
+ <link href="{% static 'authentication/assets/libs/summernote/summernote-bs4.min.css' %}" rel="stylesheet" type="text/css" />
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f8ff; /* Very light blue background */
-        }
-        .drawer {
-            width: 250px;
-            background-color: #d9edf7; /* Lightest blue color for the drawer */
-            color: #004085; /* Dark blue text color */
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: start;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        .drawer a, .drawer .dropdown-btn {
-            color: #004085; /* Dark blue text color */
-            text-decoration: none;
-            margin-bottom: 10px;
-            padding: 10px;
+            .form-group textarea,
+            .form-group input {
             width: 100%;
-            text-align: left;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .drawer a:hover, .drawer .dropdown-btn:hover {
-            background-color: #bfefff; /* Lighter shade of blue for hover effect */
-        }
-        .content {
-            flex: 1;
-            padding: 40px;
-            background-color: #ffffff; /* White background for content area */
-            overflow-y: auto;
-        }
-        .heading {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #004085; /* Dark blue color for heading */
-        }
-        .dropdown {
-            display: none;
-            flex-direction: column;
-            padding-left: 10px;
-        }
-        .dropdown a {
-            margin-bottom: 5px;
-            padding-left: 20px;
-            background-color: #e9f7fc; /* Very light blue background for dropdown items */
-        }
-        .drawer .dropdown-btn {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #e9f7fc; /* Very light blue background for dropdown button */
-        }
-        .drawer .dropdown-btn::after {
-            content: '▼';
-            font-size: 12px;
-            margin-left: auto;
-            transition: transform 0.3s;
-        }
-        .drawer .dropdown-btn.active::after {
-            transform: rotate(-180deg);
-        }
-        form {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background-color: #e9f7fc; /* Light blue background */
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            color: #004085; /* Dark blue text color */
-        }
-        input[type="email"], input[type="text"], textarea {
-            width: 100%;
-            padding: 8px;
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 4px;
             border: 1px solid #ccc;
-            border-radius: 5px;
             box-sizing: border-box;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        button[type="submit"] {
-            background-color: #007bff; /* Bootstrap blue */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button[type="submit"]:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-        }
-    </style>
-    <script>
-        function toggleDropdown(id) {
-            var dropdown = document.getElementById(id);
-            var dropdownBtn = document.querySelector(`[data-dropdown="${id}"]`);
-            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-                dropdown.style.display = 'flex';
-                dropdownBtn.classList.add('active');
-            } else {
-                dropdown.style.display = 'none';
-                dropdownBtn.classList.remove('active');
             }
+            
+            .form-group textarea {
+                resize: vertical;
+                min-height: 100px;
         }
-    </script>
-</head>
-<body>
-    <div class="drawer">
-        <div class="heading">Email Marketing</div>
-        <div id="leadsDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('leadsDropdown')">Leads Management</div>
-        <div id="leadsDropdown" class="dropdown">
-            <a href="#">All Leads</a>
-            <a href="#">Add Lead</a>
-            <a href="#">Find Lead</a>
-            <a href="#">Update Lead</a>
-            <a href="#">Add Notes</a>
+    
+            .btn-block {
+                width: 100%;
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 4px;
+            }
+        </style>
+
+ 
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                       
         </div>
-        <div id="mailDropdownBtn" class="dropdown-btn" onclick="toggleDropdown('mailDropdown')">Mail Management</div>
-        <div id="mailDropdown" class="dropdown">
-            <a href="{% url 'send_mail' %}">Send Mail</a>
-            <a href="{% url 'receive_mail' %}">Receive Mail</a>
-            <a href="{% url 'reply_to_email' %}">Reply to Email</a>
-            <a href="{% url 'get_sent_emails' %}">Sent Mails</a>
-            <a href="{% url 'get_received_emails' %}">Received Mails</a>
-            <a href="{% url 'add_domain' %}">Add Domain</a>
-            <a href="{% url 'verify_domain' %}">Verify Domain</a>
+                                    <h4 class="page-title">Reply to Email {{ original_email.subject }}</h4>
         </div>
-        <a href="#">AI Optimization</a>
     </div>
-    <div class="content">
-        <h1>Reply to Email</h1>
-        <form method="post" action="{% url 'reply_to_email' %}">
+                        </div>     
+                        <!-- end page title --> 
+
+                        <!-- Right Sidebar -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-box">
+                                    <!-- Left sidebar -->
+                                    <div class="inbox-leftbar">
+                                        <h4 class="logo-lg-text-light font-weight-bold">Navigation</h4>
+                                        <div class="mail-list mt-4">
+                                            
+                                        
+
+                                        <a href="{% url 'send_mail' %}" class="btn btn-success btn-block waves-effect waves-light">Compose an Email</a>
+                                        <a href="{% url 'get_received_emails' %}" class="btn btn-danger btn-block waves-effect waves-light">Inbox</a>
+                                        <a href="{% url 'get_sent_emails' %}" class="btn btn-success btn-block waves-effect waves-light">Sent Mails</a>
+
+                                       
+                                    </div>
+                                    
+
+                                    </div>
+                                    <!-- End Left sidebar -->
+
+                                    <div class="inbox-rightbar">
+
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-light waves-effect"><i class="mdi mdi-archive font-18"></i></button>
+                                            <button type="button" class="btn btn-sm btn-light waves-effect"><i class="mdi mdi-alert-octagon font-18"></i></button>
+                                            <button type="button" class="btn btn-sm btn-light waves-effect"><i class="mdi mdi-delete-variant font-18"></i></button>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-folder font-18"></i>
+                                                <i class="mdi mdi-chevron-down"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <span class="dropdown-header">Move to</span>
+                                                <a class="dropdown-item" href="javascript: void(0);">Social</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Promotions</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Updates</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Forums</a>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-label font-18"></i>
+                                                <i class="mdi mdi-chevron-down"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <span class="dropdown-header">Label as:</span>
+                                                <a class="dropdown-item" href="javascript: void(0);">Updates</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Social</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Promotions</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Forums</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-light dropdown-toggle waves-effect" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-horizontal font-18"></i> More
+                                                <i class="mdi mdi-chevron-down"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <span class="dropdown-header">More Option :</span>
+                                                <a class="dropdown-item" href="javascript: void(0);">Mark as Unread</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Add to Tasks</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Add Star</a>
+                                                <a class="dropdown-item" href="javascript: void(0);">Mute</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-4">
+                                            <form method="post" action="{% url 'reply_email' original_email.id %}">
             {% csrf_token %}
-            <label for="sender">Sender:</label>
-            <input type="email" id="sender" name="sender" required><br><br>
-            <label for="subject">Subject:</label>
-            <input type="text" id="subject" name="subject" required><br><br>
-            <label for="content">Content:</label><br>
-            <textarea id="content" name="content" rows="10" cols="30" required></textarea><br><br>
-            <label for="recipient">Recipient:</label>
-            <input type="email" id="recipient" name="recipient" required><br><br>
-            <button type="submit">Reply</button>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" placeholder="Subject" id="subject" name="subject" value="{{ reply_subject }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <textarea id="html_body" name="html_body" rows="10" placeholder="Body" required></textarea><br><br>
+                                                        
+        
+                                                    </div>
+                                                </div>
+        
+                                                <div class="form-group m-b-0">
+                                                    <div class="text-right">
+                                                        <button type="button" class="btn btn-success waves-effect waves-light m-r-5"><i class="mdi mdi-content-save-outline"></i></button>
+                                                        <button type="button" class="btn btn-success waves-effect waves-light m-r-5"><i class="mdi mdi-delete"></i></button>
+                                                        <button class="btn btn-primary waves-effect waves-light"> <span>Send</span> <i class="mdi mdi-send ml-2"></i> </button>
+                                                    </div>
+                                                </div>
+        
         </form>
+                                            <a href="{% url 'get_received_emails' %}">Cancel</a>
+                                        </div> <!-- end card-->
+            
+                                    </div> 
+                                    <!-- end inbox-rightbar-->
+
+                                    <div class="clearfix"></div>
     </div>
+
+                            </div> <!-- end Col -->
+
+                        </div><!-- End row -->
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!--Summernote js-->
+        <script src="{% static 'authentication/assets/libs/summernote/summernote-bs4.min.js' %}"></script>
+
+        <script>
+            jQuery(document).ready(function(){
+                $('.summernote').summernote({
+                    height: 230,                 // set editor height
+                    minHeight: null,             // set minimum height of editor
+                    maxHeight: null,             // set maximum height of editor
+                    focus: false                 // set focus to editable area after initializing summernote
+                });
+            });
+        </script>
+
+        <!-- App js -->
+        <script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
+
 </body>
+
+<!-- Mirrored from coderthemes.com/ubold/layouts/default/email-compose.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 10 Sep 2020 17:26:16 GMT -->
 </html>
+            {% endblock %}
+
+
+
+

@@ -1,11 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Campaign List</title>
-</head>
-<body>
-    <h1>All Campaigns</h1>
-    <table>
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Campaign List{% endblock %}
+{% block content %}
+
+
+
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                    </div>
+                                    <h4 class="page-title">Datatables</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title">Campaigns</h4>
+                                        <p class="text-muted font-13 mb-4">
+                                            Below are the your created campaigns, to check their details, click on View Campaign button.
+                                        </p>
+
+                                        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
         <thead>
             <tr>
                 <th>Name</th>
@@ -15,6 +47,8 @@
                 <th>Actions</th>
             </tr>
         </thead>
+                                        
+                                        
         <tbody>
             {% for campaign in campaigns %}
             <tr>
@@ -22,10 +56,80 @@
                 <td>{{ campaign.no_of_target_leads }}</td>
                 <td>{{ campaign.products }}</td>
                 <td>{{ campaign.my_brand }}</td>
-                <td><a href="{% url 'campaign_detail' campaign.id %}">View Details</a></td>
+                                                    <td><a href="{% url 'campaign_detail' campaign.id %}" class="btn btn-primary waves-effect waves-light">View Campaign</a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+                                    </div> <!-- end card body-->
+                                </div> <!-- end card -->
+                            </div><!-- end col-->
+                        </div>
+                        <!-- end row-->
+
+
+                        
+
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+               
+
+        </div>
+        <!-- END wrapper -->
+
+      
+        <!-- third party js -->
+        <script src="{% static 'authentication/assets/libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/datatables.net-select/js/dataTables.select.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'authentication/assets/libs/pdfmake/build/vfs_fonts.js' %}"></script>
+        
+        <!-- third party js ends -->
+
+        <!-- Datatables init -->
+        <script src="{% static 'authentication/assets/js/pages/datatables.init.js' %}"></script>
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function () {
+        $("#basic-datatable").DataTable({
+            language: {
+                paginate: {
+                    previous: "<i class='mdi mdi-chevron-left'>",
+                    next: "<i class='mdi mdi-chevron-right'>"
+                }
+            },
+            drawCallback: function () {
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+            }
+        });
+    });
+</script>
+        <!-- App js -->
+        <script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
+        
 </body>
+
+<!-- Mirrored from coderthemes.com/ubold/layouts/default/tables-datatables.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 10 Sep 2020 17:28:03 GMT -->
 </html>
+
+
+
+
+
+
+{% endblock %}
+
+

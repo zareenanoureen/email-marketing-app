@@ -29,7 +29,7 @@ moz_secret_key = os.getenv('MOZ_SECRET_KEY')
 
 def show_leads(request):
     leads = Lead.objects.all()
-    return render(request, 'dashboard/show_leads.html', {'leads': leads})
+    return render(request, 'registration/default/tables-responsive.html', {'leads': leads})
 
 @login_required
 @csrf_exempt

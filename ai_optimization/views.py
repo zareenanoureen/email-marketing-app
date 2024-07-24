@@ -128,6 +128,7 @@ def campaign_detail(request, campaign_id):
 
 def sent_mail_detail(request, mail_id):
     sent_mail = get_object_or_404(AISentMails, pk=mail_id)
+   
     return render(request, 'dashboard/sent_mail_detail.html', {'sent_mail': sent_mail})
 
 def respond_email(request, mail_id):
