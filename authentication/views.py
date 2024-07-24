@@ -92,7 +92,9 @@ def profile(request):
             location=location
         )
         
-        return render(request, 'dashboard/profile.html')
+        return render(request, 'dashboard/home.html')
+     
+    return render(request, 'dashboard/profile.html')
     
 def tabs_page(request):
     return render(request, 'dashboard/tabs.html')

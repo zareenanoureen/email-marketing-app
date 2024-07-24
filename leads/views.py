@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from authentication.models import *
@@ -29,7 +29,7 @@ moz_secret_key = os.getenv('MOZ_SECRET_KEY')
 
 def show_leads(request):
     leads = Lead.objects.all()
-    return render(request, 'registration/default/tables-responsive.html', {'leads': leads})
+    return render(request, 'dashboard/show_leads.html', {'leads': leads})
 
 @login_required
 @csrf_exempt
@@ -285,3 +285,9 @@ def generate_shopifystoresdetail(request):
         })
 
     return render(request, 'dashboard/all_leads.html', {'leads': lead_data})
+
+
+def lead_detail(request, lead_id):
+    lead = get_object_or_404(Lead, pk=lead_id)
+    return render(request, 'dashboard/lead_detail.html', {'lead': lead})
+

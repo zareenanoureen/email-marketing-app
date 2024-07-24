@@ -1,0 +1,178 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+{% block title %}Campaign Details{% endblock %}
+{% block content %}
+
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                       
+                                    </div>
+                                    <h4 class="page-title">Lead Details</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title -->
+                       
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-6">
+                                <!-- project card -->
+                                <div class="card d-block">
+                                    <div class="card-body">
+                                        <div class="dropdown float-right">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="dripicons-dots-3"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                               
+                                                
+                                            
+                                               
+                                                <!-- item-->
+                                                <a href="{% url 'all-leads' %}" class="dropdown-item"><i class="mdi mdi-exit-to-app mr-1"></i>Leave</a>
+                                            </div>
+                                        </div>
+                                        <!-- project title-->
+                                        <h3 class="mt-0 font-20">
+                                            {{ lead.name }}
+                                        </h3>
+                                        
+                                        <h5>Website link:</h5>
+
+                                        <p class="btn-link">
+                                            {{ lead.link }}
+                                        </p>
+
+                                        <h5>Brand Summary:</h5>
+
+                                        <p class="text-muted mb-2">
+                                            {{ lead.brand_summary }}
+                                        </p>
+
+
+                                    </div> <!-- end card-body-->
+                                    
+                                </div> <!-- end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-right">
+                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="dripicons-dots-3"></i>
+                                            </a>
+                                            
+                                        </div>
+
+                                        <h4 class="mt-0 mb-3">Traffic Analysis</h4>
+
+                                        <p class="text-muted mb-2">
+                                            {{ lead.traffic_analysis }}
+                                        </p>
+
+                                        <div class="mt-2">
+                                            <div class="media">
+                                               
+                                              
+                                            </div>
+
+                                            <div class="media mt-3">
+                                                
+                                                <div class="media-body">
+                                                    
+                                                </div>
+                                            </div>
+    
+                                            <div class="media mt-3">
+                                                <a class="pr-2" href="#">
+                                                   
+                                                </a>
+                                                <div class="media-body">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center mt-2">
+                                           
+                                        </div>
+                                    </div> <!-- end card-body-->
+                                </div>
+                                <!-- end card-->
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">SEO Score</h5>
+                                        <p class="text-muted mb-2">
+                                            {{ lead.seo_score }}
+                                        </p> 
+                                    </div>
+                                </div>
+                                <!-- end card-->
+
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">Files</h5>
+
+                                        <div class="mb-4">
+                                            <h5>Technology Stacks</h5>
+                                            {{ lead.tech_stacks }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+              
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+      
+
+       
+
+        <!-- Chart JS -->
+        <script src="{% static 'authentication/assets/libs/chart.js/Chart.bundle.min.js' %}"></script>
+
+        <!-- Init js -->
+        <script src="{% static 'authentication/assets/js/pages/project-details.init.js' %}"></script>
+
+        <!-- App js -->
+        <script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
+        
+    </body>
+
+<!-- Mirrored from coderthemes.com/ubold/layouts/default/project-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 10 Sep 2020 17:26:28 GMT -->
+</html>
+
+{% endblock %}
