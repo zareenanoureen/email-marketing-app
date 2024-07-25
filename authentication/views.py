@@ -50,8 +50,12 @@ def signin(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                print(request.user)
                 try:
-                    profile = user.userprofile  # Assuming UserProfile is related as user.userprofile
+                    profile = user.userprofile
+                    print(profile)
+                    if UserProfile:
+                        return redirect(reverse('dashboard'))  # Assuming UserProfile is related as user.userprofile
                 except UserProfile.DoesNotExist:
                     profile = None
                 # user_data = {
