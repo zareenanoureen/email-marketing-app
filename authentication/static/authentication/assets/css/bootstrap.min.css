@@ -8884,10 +8884,7 @@ button.bg-blue:hover {
 }
 
 .p-4 {
-    padding-top: 6.25rem;
-    padding-right: 18.75rem;
-    padding-bottom: 1.25rem;
-    padding-left: 18.75rem;
+    padding: 1.5rem !important
 }
 
 .pt-4,

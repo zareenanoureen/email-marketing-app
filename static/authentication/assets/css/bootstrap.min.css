@@ -610,7 +610,7 @@ pre code {
 .container-md,
 .container-sm,
 .container-xl {
-    width: 60%;
+    width: 100%;
     padding-right: 12px;
     padding-left: 12px;
     margin-right: auto;
@@ -8884,10 +8884,7 @@ button.bg-blue:hover {
 }
 
 .p-4 {
-    padding-top: 6.25rem;
-    padding-right: 18.75rem;
-    padding-bottom: 1.25rem;
-    padding-left: 18.75rem;
+    padding: 2.25rem !important
 }
 
 .pt-4,
