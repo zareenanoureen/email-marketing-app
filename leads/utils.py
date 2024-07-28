@@ -18,7 +18,7 @@ def summarize_text(text, chunk_size=1000):
                 messages=[
                     {
                         "role": "user",
-                        "content": f"Summarize the following text to create a concise summary about the brand. The summary must include key details such as name, address, phone number, email, and unique selling points. It should get Email and Phone Number with country code but If any details are not found, provide '' or None. Format the summary in a list. For example: \n\nName: Scents N Stories\nAddress: Lahore\nPhone Number: +92 311 100 7862\nEmail: test@gmail.com\n\nUnique Selling Points: [Unique points about the brand]\n\nText to summarize: {combined_text}",
+                        "content": f"Summarize the following text to create a concise summary about the brand. The summary must include key details such as name, address, phone number, email, and unique selling points. It should get Email and Phone Number with country code but If any details are not found, provide '' or None. Format the summary in a list. Also, please Do not add any '*'(asterisks) at all in the output. For example: \n\nName: Scents N Stories\nAddress: Lahore\nPhone Number: +92 311 100 7862\nEmail: test@gmail.com\n\nUnique Selling Points: [Unique points about the brand]\n\nText to summarize: {combined_text}",
                     }
                 ],
                 model="llama3-8b-8192",
@@ -36,7 +36,7 @@ def calculate_seo_score(meta, slug):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Calculate the SEO score based on the following meta and slug information:\nMeta: {meta}\nSlug: {slug}, Just Provide me the Scores with headings, don't add any extra details or don't make it lengthy.",
+                    "content": f"Calculate the SEO score based on the following meta and slug information:\nMeta: {meta}\nSlug: {slug}, Just Provide me the Scores with headings, don't add any extra details or don't make it lengthy.Also, please Do not add any '*'(asterisks) at all in the output, give it in a list. For example:SEO Score:\nKeyword Usage (10/10)= 10\nMeta Description Length (5/10)= 5\nTitle Length (5/10)= 5\nMeta Count (8/10)= 8\nSlug Score (8/10)= 8\nTotal Score (36/50)= 36 ",
                 }
             ],
             model=model,
@@ -53,7 +53,7 @@ def get_tech_stacks(url):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Identify the technology stacks used by the website at the following URL: {url}, Just give me the names of Technology stacks. Don't add any extra details or don't make it lengthy.",
+                    "content": f"Identify the technology stacks used by the website at the following URL: {url}. Provide the names of the technology stacks in the following format: Here are the technology stacks used by the website at the URL {url}: 1. Technology1 2. Technology2 3. Technology3 4. Technology4 5. Technology5 6. Technology6 7. Technology7",
                 }
             ],
             model=model,
@@ -71,7 +71,7 @@ def get_traffic_analysis(url):
             messages=[
                 {
                     "role": "user",
-                    "content": f"Provide a traffic analysis for the website at the following URL: {url}. Please provide me concise ad accurate traffic analysis,  don't add any extra details or don't make it lengthy.",
+                    "content": f"Provide a traffic analysis for the website at the following URL: {url}. Please provide me concise ad accurate traffic analysis,  don't add any extra details or don't make it lengthy.Also, please Do not add any '*'(asterisks) at all in the output.",
                 }
             ],
             model=model,

@@ -3,7 +3,14 @@
 {% block title %}Campaign Details{% endblock %}
 {% block content %}
 
-
+<style>
+    .chart-container {
+        width: 100%;
+        max-width: 700px;
+        height: 250px;
+        margin: auto;
+    }
+</style>
             <!-- ============================================================== -->
             <!-- Start Page Content here -->
             <!-- ============================================================== -->
@@ -36,7 +43,7 @@
                                     <div class="card-body">
                                         <div class="dropdown float-right">
                                             <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
-                                                <i class="dripicons-dots-3"></i>
+                                                
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                
@@ -61,7 +68,7 @@
                                         <h5>Brand Summary:</h5>
 
                                         <p class="text-muted mb-2">
-                                            {{ lead.brand_summary }}
+                                            {{ lead.get_formatted_brand_summary|safe }}
                                         </p>
 
 
@@ -72,8 +79,8 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="dropdown float-right">
-                                            <a href="#" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown" aria-expanded="false">
-                                                <i class="dripicons-dots-3"></i>
+                                            
+                                                
                                             </a>
                                             
                                         </div>
@@ -119,20 +126,36 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title mb-3">SEO Score</h5>
-                                        <p class="text-muted mb-2">
-                                            {{ lead.seo_score }}
-                                        </p> 
+                                     
+                                        <div class="chart-container">
+                                            <canvas id="seoChart"></canvas>
+                                        </div>
+                                        <div class="mt-3 text-center">
+                                            <h6>Total SEO Score: <span id="totalSeoScore"></span> / 50</h6>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- end card-->
 
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title mb-3">Files</h5>
+                                        <h5>Technology Stacks</h5>
 
                                         <div class="mb-4">
-                                            <h5>Technology Stacks</h5>
-                                            {{ lead.tech_stacks }}
+                                            {% if tech_stacks_list %}
+                                            <p class="text-muted mb-2">
+                                               
+                                                Below are the technology stacks used by {{lead.name}}:
+                                            </p> 
+                                            <div class="text-uppercase">
+                                                
+                                                {% for stack in tech_stacks_list %}
+                                                    <a href="#" class="badge badge-soft-primary mr-1">{{ stack }}</a>
+                                                {% endfor %}
+                                                {% else %}
+                                    <p>No technology stacks available</p>
+                                {% endif %}
+                                            </div>
                                         </div>
 
                                     </div>
@@ -163,7 +186,73 @@
 
         <!-- Chart JS -->
         <script src="{% static 'authentication/assets/libs/chart.js/Chart.bundle.min.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const labels = JSON.parse('{{ seo_labels|escapejs }}');
+        const data = JSON.parse('{{ seo_data|escapejs }}');
+        const totalSeoScore = data.reduce((a, b) => a + b, 0);
 
+        document.getElementById('totalSeoScore').textContent = totalSeoScore;
+
+        const ctx = document.getElementById('seoChart').getContext('2d');
+
+        const seoChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'SEO Scores',
+                    data: data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(255, 99, 132, 0.6)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '/10';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#333'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+        
+
+        
         <!-- Init js -->
         <script src="{% static 'authentication/assets/js/pages/project-details.init.js' %}"></script>
 

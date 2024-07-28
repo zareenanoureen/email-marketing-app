@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
+from django.core.serializers.json import DjangoJSONEncoder
 from authentication.models import *
 from django.db.models import Q
 import json
@@ -218,7 +219,7 @@ def generate_shopifystoresdetail(request):
                         link=item['link'],
                         brand_summary=brand_summary.strip(),
                         seo_score=seo_score,
-                        tech_stacks=tech_stacks,  # Convert list to newline-separated string
+                        tech_stacks="\n".join(tech_stacks),  # Convert list to newline-separated string
                         traffic_analysis=traffic_analysis,
                         name=parsed_summary['Name'],
                         contact_no=parsed_summary['Phone Number'],
@@ -274,20 +275,39 @@ def generate_shopifystoresdetail(request):
 
     # Prepare data for charts and tables
     lead_data = []
+
     for lead in leads:
+        # Split the string by newlines
+        lines = lead.tech_stacks.strip().split('\n')
+
+        # Skip the first line and any potential empty lines
+        tech_stacks_raw = [line.strip() for line in lines[1:] if line.strip()]
+
+        # Remove numbering (optional)
+        tech_stacks = [line.split('. ', 1)[-1] for line in tech_stacks_raw]
+        print(tech_stacks)
+
         lead_data.append({
             'name': lead.name,
             'link': lead.link,
             'brand_summary': lead.brand_summary,
             'seo_score': lead.seo_score,
-            'tech_stacks': lead.tech_stacks,
+            'tech_stacks': tech_stacks,
             'traffic_analysis': lead.traffic_analysis
         })
-
+    print(lead_data)
     return render(request, 'dashboard/all_leads.html', {'leads': lead_data})
 
 
 def lead_detail(request, lead_id):
     lead = get_object_or_404(Lead, pk=lead_id)
-    return render(request, 'dashboard/lead_detail.html', {'lead': lead})
+    tech_stacks_list = lead.get_tech_stacks_list()
+    labels, data = lead.get_seo_scores()
+    context = {
+        'lead': lead,
+        'seo_labels': json.dumps(labels, cls=DjangoJSONEncoder),
+        'tech_stacks_list' : tech_stacks_list,
+        'seo_data': json.dumps(data, cls=DjangoJSONEncoder),
+    }
+    return render(request, 'dashboard/lead_detail.html', context)
 

@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.8
+        options: --privileged
+        ports:
+          - 2375:2375
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip build-essential libffi-dev libssl-dev cython curl sshpass
+          python3 -m venv /venv
+          source /venv/bin/activate
+          pip install --upgrade pip
+          curl -SL "https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Prune Docker System
+        run: docker system prune -af
+
+      - name: Build Docker Image
+        run: docker-compose -f docker-compose.yml build
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Server
+        env:
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sshpass -p "@987123Ubuntu" ssh -o StrictHostKeyChecking=no root@142.93.194.97 << 'EOF'
+          echo "Checking Docker Compose version on remote server..."
+          if ! command -v docker-compose &> /dev/null
+          then
+              echo "docker-compose could not be found, installing..."
+              curl -SL "https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+          fi
+          docker-compose --version
+          echo "Updating codebase..."
+          if [ -d /home/username/email-marketing-app/email-marketing-app ]; then
+            cd /home/username/email-marketing-app/email-marketing-app
+            git fetch origin
+            git status
+            git pull origin main
+            git log --oneline -n 5
+          else 
+            git clone https://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@github.com/zareenanoureen/email-marketing-app.git /home/username/email-marketing-app/email-marketing-app
+          fi
+          echo "Restarting Docker containers..."
+          cd /home/username/email-marketing-app/email-marketing-app && docker-compose down && docker-compose up -d
+          EOF
