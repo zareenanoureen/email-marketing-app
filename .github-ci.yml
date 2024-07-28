@@ -72,7 +72,7 @@ jobs:
             git pull origin main
             git log --oneline -n 5
           else 
-            git clone https://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@github.com/zareenanoureen/email-marketing-app.git /home/username/email-marketing-app/email-marketing-app
+            git clone https://github.com/zareenanoureen/email-marketing-app.git /home/username/email-marketing-app/email-marketing-app
           fi
           echo "Restarting Docker containers..."
           cd /home/username/email-marketing-app/email-marketing-app && docker-compose down && docker-compose up -d
