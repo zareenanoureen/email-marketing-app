@@ -29,7 +29,7 @@ moz_access_id = os.getenv('MOZ_ACCESS_ID')
 moz_secret_key = os.getenv('MOZ_SECRET_KEY')
 
 def show_leads(request):
-    leads = Lead.objects.all()
+    leads = Lead.objects.filter(user_id=request.user)
     return render(request, 'dashboard/show_leads.html', {'leads': leads})
 
 @login_required
