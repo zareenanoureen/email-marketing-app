@@ -1,13 +1,13 @@
 {% extends 'registration/base.html' %}
 {% load static %}
-{% block title %}Campaign Details{% endblock %}
+{% block title %}Lead Details{% endblock %}
 {% block content %}
 
 <style>
     .chart-container {
         width: 100%;
         max-width: 700px;
-        height: 200px;
+        height: 300px;
         margin: auto;
     }
 </style>
@@ -85,38 +85,18 @@
                                             
                                         </div>
 
-                                        <h4 class="mt-0 mb-3">Traffic Analysis</h4>
-
-                                        <p class="text-muted mb-2">
-                                            {{ lead.traffic_analysis }}
-                                        </p>
-
-                                        <div class="mt-2">
-                                            <div class="media">
-                                               
-                                              
-                                            </div>
-
-                                            <div class="media mt-3">
-                                                
-                                                <div class="media-body">
-                                                    
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="dropdown float-right"></div>
+                                                <h4 class="mt-0 mb-3">Traffic Analysis</h4>
+                                                <div class="chart-container">
+                                                    <canvas id="trafficChart"></canvas>
                                                 </div>
-                                            </div>
-    
-                                            <div class="media mt-3">
-                                                <a class="pr-2" href="#">
-                                                   
-                                                </a>
-                                                <div class="media-body">
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
+                                            </div> <!-- end card-body-->
+                                        </div> <!-- end card-->
 
-                                        <div class="text-center mt-2">
-                                           
-                                        </div>
+                                       
+
                                     </div> <!-- end card-body-->
                                 </div>
                                 <!-- end card-->
@@ -185,35 +165,31 @@
        
 
         <!-- Chart JS -->
-        <script src="{% static 'authentication/assets/libs/chart.js/Chart.bundle.min.js' %}"></script>
+<script src="{% static 'authentication/assets/libs/chart.js/Chart.bundle.min.js' %}"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const labels = JSON.parse('{{ seo_labels|escapejs }}');
-        const data = JSON.parse('{{ seo_data|escapejs }}');
-        const totalSeoScore = data.reduce((a, b) => a + b, 0);
-
+        // Parse SEO labels and data
+        const seoLabels = JSON.parse('{{ seo_labels|escapejs }}');
+        const seoData = JSON.parse('{{ seo_data|escapejs }}');
+        const totalSeoScore = seoData.reduce((a, b) => a + b, 0);
         document.getElementById('totalSeoScore').textContent = totalSeoScore;
 
-        const ctx = document.getElementById('seoChart').getContext('2d');
-
-        const seoChart = new Chart(ctx, {
+        const seoCtx = document.getElementById('seoChart').getContext('2d');
+        new Chart(seoCtx, {
             type: 'pie',
             data: {
-                labels: labels,
+                labels: seoLabels,
                 datasets: [{
                     label: 'SEO Scores',
-                    data: data,
+                    data: seoData,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.6)',
                         'rgba(54, 162, 235, 0.6)',
                         'rgba(255, 206, 86, 0.6)',
                         'rgba(75, 192, 192, 0.6)',
                         'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(75, 192, 192, 0.6)',
-                        'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 159, 64, 0.6)',
-                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
@@ -221,11 +197,7 @@
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 159, 64, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -248,20 +220,72 @@
                 }
             }
         });
+
+        // Parse Traffic Analysis data
+        const trafficAnalysis = JSON.parse('{{ traffic_analysis|escapejs }}');
+        const trafficLabels = trafficAnalysis.top_pages.labels;
+        const trafficData = trafficAnalysis.top_pages.data;
+
+        // Check if data and labels are correctly parsed
+        console.log('Traffic Labels:', trafficLabels);
+        console.log('Traffic Data:', trafficData);
+
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: trafficLabels,
+                datasets: [{
+                    label: 'Top Pages Traffic',
+                    data: trafficData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Pages'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Traffic (%)'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'; // Adding '%' to y-axis values
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
     });
 </script>
-        
 
-        
-        <!-- Init js -->
-        <script src="{% static 'authentication/assets/js/pages/project-details.init.js' %}"></script>
 
-        <!-- App js -->
-        <script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
-        
-    </body>
 
-<!-- Mirrored from coderthemes.com/ubold/layouts/default/project-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 10 Sep 2020 17:26:28 GMT -->
-</html>
+
+
+<!-- Init js -->
+<script src="{% static 'authentication/assets/js/pages/project-details.init.js' %}"></script>
+<!-- App js -->
+<script src="{% static 'authentication/assets/js/app.min.js' %}"></script>
 
 {% endblock %}

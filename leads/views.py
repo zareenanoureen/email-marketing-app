@@ -299,15 +299,23 @@ def generate_shopifystoresdetail(request):
     return render(request, 'dashboard/all_leads.html', {'leads': lead_data})
 
 
+@csrf_exempt
+@login_required
 def lead_detail(request, lead_id):
     lead = get_object_or_404(Lead, pk=lead_id)
     tech_stacks_list = lead.get_tech_stacks_list()
     labels, data = lead.get_seo_scores()
+
+    # Parse traffic analysis
+    traffic_data = parse_traffic_analysis(lead.traffic_analysis) if lead.traffic_analysis else {}
+    traffic_analysis_json = json.dumps(traffic_data, cls=DjangoJSONEncoder)
+    print(traffic_analysis_json)  # Debug print
+
     context = {
         'lead': lead,
         'seo_labels': json.dumps(labels, cls=DjangoJSONEncoder),
-        'tech_stacks_list' : tech_stacks_list,
+        'tech_stacks_list': tech_stacks_list,
         'seo_data': json.dumps(data, cls=DjangoJSONEncoder),
+        'traffic_analysis': traffic_analysis_json
     }
     return render(request, 'dashboard/lead_detail.html', context)
-

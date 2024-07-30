@@ -158,3 +158,69 @@ def parse_brand_summary(summary):
             extracted_values[key] = match.group(1).strip()
 
     return extracted_values
+
+
+def parse_traffic_analysis(text):
+    traffic_data = {
+        'top_pages': {
+            'labels': [],
+            'data': []
+        },
+        'geographic_distribution': {
+            'labels': [],
+            'data': []
+        }
+    }
+
+    print("Original text:", text)  # Debug print
+
+    # Parsing Top Pages
+    if "**Top Pages:**" in text:
+        top_pages_section = text.split("**Top Pages:**")[1].split("**")[0].strip()
+        print("Top Pages section found:", top_pages_section)  # Debug print
+        top_pages_lines = top_pages_section.split('\n')
+        for line in top_pages_lines:
+            print(f"Processing Top Pages line: {line}")  # Debug print
+            if ': ' in line and '% of total traffic' in line:
+                page_name, traffic_percentage = line.split(': ')
+                traffic_percentage = traffic_percentage.split('% of total traffic')[0]
+                traffic_data['top_pages']['labels'].append(page_name.strip())
+                traffic_data['top_pages']['data'].append(float(traffic_percentage.strip()))
+            else:
+                print(f"Top Pages parsing failed for line: {line}")
+
+    else:
+        print("Top Pages section not found")
+
+    # Parsing Geographic Distribution
+    if "**Geographic Distribution:**" in text:
+        geo_distribution_section = text.split("**Geographic Distribution:**")[1].split("**")[0].strip()
+        print("Geographic Distribution section found:", geo_distribution_section)  # Debug print
+        geo_lines = geo_distribution_section.split('\n')
+        for line in geo_lines:
+            print(f"Processing Geographic Distribution line: {line}")  # Debug print
+            if 'Top countries:' in line:
+                countries = line.split('Top countries:')[1].strip().split(',')
+                for country_info in countries:
+                    if '(' in country_info and '%' in country_info:
+                        country, percentage = country_info.split('(')
+                        traffic_data['geographic_distribution']['labels'].append(country.strip())
+                        traffic_data['geographic_distribution']['data'].append(float(percentage.split('%')[0].strip()))
+                    else:
+                        print(f"Country info parsing failed for line: {country_info}")
+            elif 'Top cities:' in line:
+                cities = line.split('Top cities:')[1].strip().split(',')
+                for city_info in cities:
+                    if '(' in city_info and '%' in city_info:
+                        city, percentage = city_info.split('(')
+                        traffic_data['geographic_distribution']['labels'].append(city.strip())
+                        traffic_data['geographic_distribution']['data'].append(float(percentage.split('%')[0].strip()))
+                    else:
+                        print(f"City info parsing failed for line: {city_info}")
+            else:
+                print(f"Geographic Distribution parsing failed for line: {line}")
+
+    else:
+        print("Geographic Distribution section not found")
+
+    return traffic_data
