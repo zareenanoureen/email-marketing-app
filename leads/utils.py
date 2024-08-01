@@ -135,11 +135,11 @@ def process_website_content(url, markdown_content, html_content):
 def parse_brand_summary(summary):
     # Define patterns for extracting key-value pairs
     patterns = {
-        'Name': r'\*\*Name:\*\*\s*(.*?)\n',
-        'Phone Number': r'\*\*Phone Number:\*\*\s*([+]?[\d\s()-\.]+)',
-        'Email': r'\*\*Email:\*\*\s*(.*?)\n',
-        'Address': r'\*\*Address:\*\*\s*(.*?)\n',
-        'Unique Selling Points': r'\*\*Unique Selling Points:\*\*\s*((?:\*\s.*\n?)*)'
+        'Name': r'Name:\s*(.*?)(?=\n|Phone Number|Email|Address|Unique Selling Points|$)',
+        'Phone Number': r'Phone Number:\s*([+]?[\d\s()-\.]+)(?=\n|Name|Email|Address|Unique Selling Points|$)',
+        'Email': r'Email:\s*(.*?)(?=\n|Name|Phone Number|Address|Unique Selling Points|$)',
+        'Address': r'Address:\s*(.*?)(?=\n|Name|Phone Number|Email|Unique Selling Points|$)',
+        'Unique Selling Points': r'Unique Selling Points:\s*((?:\*\s.*\n?)*)'
     }
 
     # Initialize variables to store extracted values

@@ -36,7 +36,7 @@
         <link href="{% static 'authentication/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
         {% endblock %}
         <div id="loading-message">
-            <p>Please wait, your leads are being generated...</p>
+            <p>Please wait, your leads are being generated.....!</p>
         </div>
         
         <style>
@@ -45,15 +45,36 @@
                 position: fixed;
                 top: 50%;
                 left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(255, 255, 255, 0.8);
-                color: rgb(6, 124, 2);
+                transform: translate(-50%, -50%) scale(0.9);
+                color: rgb(53, 95, 52);
                 padding: 20px;
-                border-radius: 5px;
+                font-size: 1.5em;  /* Increase the font size */
+                background-color: transparent;  /* Remove background color */
                 text-align: center;
-                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            }
+    
+            #loading-message.show {
+                display: flex;
+                animation: fadeInScale 0.5s forwards;
+            }
+    
+            @keyframes fadeInScale {
+                0% {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) scale(0.9);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) scale(1);
+                }
             }
         </style>
+        
+        
     </head>
     
     <body class="loading" data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "light", "size": "default", "showuser": false}, "topbar": {"color": "dark"}, "showRightSidebarOnPageLoad": true}'>
@@ -1064,7 +1085,8 @@
         var generateLeadsLink = document.querySelector('a[href="{% url 'generate-shopifystoresdetail' %}"]');
         if (generateLeadsLink) {
             generateLeadsLink.addEventListener('click', function(event) {
-                document.getElementById('loading-message').style.display = 'block';
+                var loadingMessage = document.getElementById('loading-message');
+                loadingMessage.classList.add('show');
             });
         }
     });

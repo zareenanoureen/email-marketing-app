@@ -45,7 +45,7 @@ def add_lead(request):
         if not (name and contact_no and industry and location):
             return JsonResponse({'error': 'Invalid input'}, status=400)
 
-        query = f'inurl:myshopify.com {name} {industry} {location}'
+        query = f'inurl: {name} {industry} {location}'
         url = f"https://www.googleapis.com/customsearch/v1?key={google_api_key}&cx={search_engine_id}&q={query}"
 
         try:
@@ -296,7 +296,7 @@ def generate_shopifystoresdetail(request):
             'traffic_analysis': lead.traffic_analysis
         })
     print(lead_data)
-    return render(request, 'dashboard/all_leads.html', {'leads': lead_data})
+    return render(request, 'dashboard/leads_success.html', {'leads': lead_data})
 
 
 @csrf_exempt
