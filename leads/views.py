@@ -127,7 +127,8 @@ def find_leads(request):
         Q(industry__icontains=query) |
         Q(location__icontains=query) |
         Q(name__icontains=query) |
-        Q(contact_no=query)
+        Q(contact_no=query),
+        user=request.user
     )
 
     leads_data = [{

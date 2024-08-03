@@ -9,6 +9,8 @@ from django.urls import reverse
 import logging
 import requests
 from django.template.loader import render_to_string
+from custom_mails.models import Domain
+from django.contrib.auth.decorators import login_required
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -16,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 SENDGRID_API_BASE_URL = "https://api.sendgrid.com/v3"
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-FROM_EMAIL = 'info@learnity.store'
+# FROM_EMAIL = 'info@learnity.store'
 
 def send_email(api_key, from_email, to_emails, subject, content):
     message = Mail(
@@ -38,8 +40,16 @@ def send_mail(request):
         subject = request.POST.get('subject')
         html_body = request.POST.get('html_body')
 
+                # Check if the user has a verified domain
+        try:
+            domain = Domain.objects.get(user=request.user)
+            if not domain.is_valid:
+                return HttpResponse("Your domain is not verified. Please verify your domain before sending an Email.", status=403)
+            from_email = domain.name  # Set FROM_EMAIL to the verified domain name
+        except Domain.DoesNotExist:
+            return HttpResponse("Domain information not found. Please Add Domain.", status=404)
         status_code, response_body, response_headers = send_email(
-            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
+            SENDGRID_API_KEY, from_email, recipient, subject, html_body
         )
 
         if recipient:
@@ -73,9 +83,7 @@ def receive_mail(request):
         subject = request.POST.get('subject')
         content = request.POST.get('content')
         if sender:
-         sender_name = extract_name_from_email(sender)
-        
-
+            sender_name = extract_name_from_email(sender)
         
         if not content:
             return HttpResponse("Email content is empty", status=400)
@@ -104,9 +112,17 @@ def reply_email(request, email_id):
         subject = request.POST.get('subject')
         html_body = request.POST.get('html_body')
         recipient = original_email.sender
-
+        # Check if the user has a verified domain
+        try:
+            domain = Domain.objects.get(user=request.user)
+            if not domain.is_valid:
+                return HttpResponse("Your domain is not verified. Please verify your domain before replying.", status=403)
+            from_email = domain.name  # Set FROM_EMAIL to the verified domain name
+        except Domain.DoesNotExist:
+            return HttpResponse("Domain information not found. Please Add Domain.", status=404)
+        
         status_code, response_body, response_headers = send_email(
-            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
+            SENDGRID_API_KEY, from_email, recipient, subject, html_body
         )
         if recipient:
          recipient_name = extract_name_from_email(recipient)
@@ -118,16 +134,15 @@ def reply_email(request, email_id):
                 html_body=html_body,
                 recipient=recipient,
                 recipient_name=recipient_name
-                
             )
             return HttpResponse("Email sent successfully", status=202)
-        
     context = {
         'original_email': original_email,
         'reply_subject': f"Re: {original_email.subject}",
     }
     return render(request, 'dashboard/reply_email.html', context)
 
+@login_required
 @csrf_exempt
 def add_domain(request):
     if request.method == 'POST':
@@ -143,14 +158,31 @@ def add_domain(request):
         }
 
         try:
+            # Add the domain to SendGrid
             response = requests.post(url, headers=headers, json=payload)
             response.raise_for_status()
             response_data = response.json()
-            return JsonResponse({"message": "Domain added successfully", "data": response_data}, status=201)
+
+            # Update or create domain in the database
+            domain_obj, created = Domain.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'name': domain,
+                    'is_valid': response_data.get('success', False)  # Assuming 'success' indicates if the domain was successfully added
+                }
+            )
+            if created:
+                message = "Domain added successfully"
+            else:
+                message = "Domain updated successfully"
+
+            return JsonResponse({"message": message, "data": response_data}, status=201)
         except requests.exceptions.RequestException as e:
             return HttpResponse(f"Failed to add domain: {str(e)}", status=500)
+
     return render(request, 'dashboard/add_domain.html')
 
+@login_required
 @csrf_exempt
 def verify_domain(request):
     if request.method == 'POST':
@@ -164,19 +196,30 @@ def verify_domain(request):
         try:
             response = requests.post(url, headers=headers)
             response.raise_for_status()
-            return JsonResponse(response.json(), status=200)
+            response_data = response.json()
+
+            # Update the domain's validity status in the database if valid
+            if response_data.get('valid', False):
+                try:
+                    domain = Domain.objects.get(user=request.user)
+                    domain.is_valid = True
+                    domain.save()
+                except Domain.DoesNotExist:
+                    return HttpResponse("Domain not found", status=404)
+
+            return JsonResponse(response_data, status=200)
         except requests.exceptions.RequestException as e:
             return HttpResponse(f"Failed to verify domain: {str(e)}", status=500)
     return render(request, 'dashboard/verify_domain.html')
 
 def get_sent_emails(request):
-    sent_emails = SentEmail.objects.all()
-    total_emails = SentEmail.objects.count()
+    sent_emails = SentEmail.objects.filter(user=request.user)
+    total_emails = SentEmail.objects.filter(user=request.user).count()
     return render(request, 'dashboard/sent_emails.html', {'sent_emails': sent_emails, 'total_emails': total_emails})
 
 def get_received_emails(request):
-    received_emails = ReceivedEmail.objects.all()
-    total_emails = ReceivedEmail.objects.count()
+    received_emails = ReceivedEmail.objects.filter(user=request.user)
+    total_emails = ReceivedEmail.objects.filter(user=request.user).count()
     return render(request, 'dashboard/received_emails.html', {'received_emails': received_emails, 'total_emails': total_emails})
 
 
@@ -209,7 +252,6 @@ def configure_receive_endpoint_view(request):
                 })
 
             result = configure_inbound_parse_settings(domain, endpoint_url)
-            print(result)
             return render(request, 'dashboard/configure_receive_endpoint.html', {
                 'message': 'Inbound parse configuration result.',
                 'result': result
@@ -233,9 +275,6 @@ def read_sent_email(request, email_id):
     return render(request, 'dashboard/read_sent_mail.html', {'email': email})
 
 
-
-
-
 def reply_sent_email(request, email_id):
     original_email = get_object_or_404(SentEmail, id=email_id)
     
@@ -244,8 +283,17 @@ def reply_sent_email(request, email_id):
         html_body = request.POST.get('html_body')
         recipient = original_email.recipient
 
+        # Check if the user has a verified domain
+        try:
+            domain = Domain.objects.get(user=request.user)
+            if not domain.is_valid:
+                return HttpResponse("Your domain is not verified. Please verify your domain before replying to this email.", status=403)
+            from_email = domain.name  # Set FROM_EMAIL to the verified domain name
+        except Domain.DoesNotExist:
+            return HttpResponse("Domain information not found. Please Add Domain.", status=404)
+
         status_code, response_body, response_headers = send_email(
-            SENDGRID_API_KEY, FROM_EMAIL, recipient, subject, html_body
+            SENDGRID_API_KEY, from_email, recipient, subject, html_body
         )
         if recipient:
          sender_name = extract_name_from_email(recipient)

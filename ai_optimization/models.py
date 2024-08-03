@@ -1,4 +1,5 @@
 from django.db import models
+from authentication.models import CustomUser
 
 class EmailTemplate(models.Model):
     subject = models.CharField(max_length=255)
@@ -10,6 +11,7 @@ class EmailTemplate(models.Model):
         return self.subject
 
 class Campaign(models.Model):
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     no_of_target_leads = models.PositiveBigIntegerField()
     products = models.TextField()

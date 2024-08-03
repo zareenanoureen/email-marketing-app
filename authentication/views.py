@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 def signup(request):
-    print(request.method)
     if request.method == 'POST':
         try:
             email = request.POST.get('email')
@@ -22,7 +21,6 @@ def signup(request):
             phone_number = request.POST.get('phone_number')
             password = request.POST.get('password')
             confirm_password = request.POST.get('confirm_password')
-            print(email, username)
             if password != confirm_password:
                 return error_response('Passwords do not match')
 
@@ -30,7 +28,6 @@ def signup(request):
                 return error_response('Email already exists')
 
             user = CustomUser.objects.create_user(email=email, username=username, phone_number=phone_number, password=password, is_active=True)
-            print(user)
             return render(request, 'registration/default/auth-login.html')
         except DatabaseError as e:
             return JsonResponse({'error': f'Database error: {e}'}, status=500)
@@ -50,10 +47,8 @@ def signin(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                print(request.user)
                 try:
                     profile = user.userprofile
-                    print(profile)
                     if UserProfile:
                         return redirect(reverse('dashboard'))  # Assuming UserProfile is related as user.userprofile
                 except UserProfile.DoesNotExist:

@@ -9,11 +9,12 @@ from django.shortcuts import render, get_object_or_404
 from custom_mails.views import send_email
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from custom_mails.models import Domain
 from dotenv import load_dotenv
 load_dotenv()
 
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-FROM_EMAIL = 'info@learnity.store'
+# FROM_EMAIL = 'info@learnity.store'
 
 groq_api_key  = os.getenv('GROQ_API_KEY')
 client = Groq(api_key=groq_api_key)
@@ -58,6 +59,19 @@ def view_template(request):
 @csrf_exempt
 def create_campaign(request):
     if request.method == 'POST':
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return HttpResponse("Unauthorized", status=401)
+
+        # Check if the user has a verified domain
+        try:
+            domain = Domain.objects.get(user=request.user)
+            if not domain.is_valid:
+                return HttpResponse("Your domain is not verified. Please verify your domain before creating a campaign.", status=403)
+            from_email = domain.name  # Set FROM_EMAIL to the verified domain name
+        except Domain.DoesNotExist:
+            return HttpResponse("Domain information not found. Please contact support.", status=404)
+
         name = request.POST.get('name')
         no_of_target_leads = int(request.POST.get('no_of_target_leads'))
         products = request.POST.get('products')
@@ -97,7 +111,7 @@ def create_campaign(request):
             # Send the email
             try:
                 send_email(
-                SENDGRID_API_KEY, FROM_EMAIL, lead.email, subject, customized_email_body
+                    SENDGRID_API_KEY, from_email, lead.email, subject, customized_email_body
                 )
             except Exception as e:
                 return HttpResponse(f"Error sending email: {str(e)}", status=500)
@@ -118,7 +132,7 @@ def create_campaign(request):
     return render(request, 'dashboard/create_campaign.html')
 
 def campaign_list(request):
-    campaigns = Campaign.objects.all()
+    campaigns = Campaign.objects.filter(user=request.user)
     return render(request, 'dashboard/campaign_list.html', {'campaigns': campaigns})
 
 def campaign_detail(request, campaign_id):
@@ -135,12 +149,18 @@ def respond_email(request, mail_id):
     if request.method == 'POST':
         response = request.POST.get('response')
         sent_mail = get_object_or_404(AISentMails, pk=mail_id)
-
+        try:
+            domain = Domain.objects.get(user=request.user)
+            if not domain.is_valid:
+                return HttpResponse("Your domain is not verified. Please verify your domain before responding to Email.", status=403)
+            from_email = domain.name  # Set FROM_EMAIL to the verified domain name
+        except Domain.DoesNotExist:
+            return HttpResponse("Domain information not found. Please Add Domain.", status=404)
         # Send the response email
         send_email(
             subject=f"Response to: {sent_mail.subject}",
             message=response,
-            from_email=FROM_EMAIL,
+            from_email=from_email,
             recipient_list=sent_mail.lead.email,  # Adjust to match your lead email field
         )
 
