@@ -27,13 +27,14 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3 python3-pip build-essential libffi-dev libssl-dev cython curl sshpass
+          sudo apt-get install -y python3 python3-pip build-essential libffi-dev libssl-dev curl sshpass
           python3 -m venv /venv
           source /venv/bin/activate
           pip install --upgrade pip
           curl -SL "https://github.com/docker/compose/releases/download/v2.28.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
+          
 
       - name: Prune Docker System
         run: docker system prune -af
