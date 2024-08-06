@@ -57,7 +57,7 @@ jobs:
           SSH_PASS: ${{ secrets.SSH_PASS }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no root@142.93.194.97 << 'EOF'
+          sshpass -p ${{ secrets.SSH_PASS }} ssh -o StrictHostKeyChecking=no root@159.203.177.54 << 'EOF'
           echo "Checking Docker Compose version on remote server..."
           if ! command -v docker-compose &> /dev/null
           then
