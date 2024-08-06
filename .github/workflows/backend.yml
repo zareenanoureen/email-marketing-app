@@ -61,6 +61,14 @@ jobs:
               chmod +x /usr/local/bin/docker-compose
           fi
           docker-compose --version
+
+          echo "Checking Docker status..."
+          if ! systemctl is-active --quiet docker
+          then
+              echo "Docker is not running, starting Docker..."
+              systemctl start docker
+          fi
+
           echo "Updating codebase..."
           if [ -d /home/username/email-marketing-app/email-marketing-app ]; then
             cd /home/username/email-marketing-app/email-marketing-app
