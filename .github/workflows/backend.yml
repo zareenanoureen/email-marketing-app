@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: |
           echo "Deploying to the server..."
-          sshpass -p ${{ secrets.SSH_PASS }} ssh root@159.203.177.54 << 'EOF'
+          SSH_PASS=${SSH_PASS} sshpass -e ssh -t -o StrictHostKeyChecking=no root@159.203.177.54 << 'EOF'
           echo "Checking Docker Compose version on remote server..."
           if ! command -v docker-compose &> /dev/null
           then
@@ -74,4 +74,3 @@ jobs:
           echo "Restarting Docker containers..."
           cd /home/username/email-marketing-app/email-marketing-app && docker-compose down && docker-compose up -d
           EOF
-
