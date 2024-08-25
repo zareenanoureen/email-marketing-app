@@ -52,7 +52,7 @@ jobs:
           TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
         run: |
           echo "Deploying to the server..."
-          sshpass -p "${SSH_PASS}" ssh -t -o StrictHostKeyChecking=no root@159.203.177.54 << 'EOF'
+          sshpass -p "${SSH_PASS}" ssh -t -o StrictHostKeyChecking=no root@142.93.194.97 << 'EOF'
           echo "Checking Docker Compose version on remote server..."
           if ! command -v docker-compose &> /dev/null
           then
