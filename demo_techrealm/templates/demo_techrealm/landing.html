@@ -1,0 +1,646 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leads Generation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="{% static 'media_demo/css/style.css' %}" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <style type="text/css">
+        body {
+            overflow-x: hidden;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .no-bullets {
+            list-style-type: none; /* Remove bullets */
+            padding-left: 0; /* Remove left padding */
+            margin: 0; /* Remove margins */
+        }
+
+        .no-bullets li {
+            margin-bottom: 5px; /* Optional: add spacing between items */
+        }
+        .navbar-light .navbar-nav .active>.nav-link,
+        .navbar-light .navbar-nav .nav-link.active,
+        .navbar-light .navbar-nav .nav-link.show,
+        .navbar-light .navbar-nav .show>.nav-link {
+            color: #000;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: #000;
+        }
+
+        .navbar-toggler {
+            background: #fff;
+        }
+
+        .navbar-nav {
+            text-align: center;
+        }
+
+        .nav-link {
+            padding: .2rem 1rem;
+        }
+
+        /*.nav-link.active, .nav-link:focus {
+                color: #fff;
+            }*/
+
+        .navbar-toggler {
+            padding: 1px 5px;
+            font-size: 18px;
+            line-height: 0.3;
+        }
+
+        .navbar-light .navbar-nav .nav-link:focus,
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #000;
+        }
+
+
+
+        .link-area {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 15px;
+            border-radius: 40px;
+            background: tomato;
+        }
+
+        .link-area a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 25px;
+        }
+
+        footer ul {
+            list-style: none;
+            width: 60%;
+            margin: auto;
+        }
+
+        footer ul li {
+            padding-top: 10px;
+            color: #333332;
+            font-weight: 600;
+        }
+
+        footer ul li a {
+            padding: 6px 10px;
+            color: #fff;
+            border-radius: 50%;
+        }
+
+        footer ul li a:hover {
+            color: #fff;
+        }
+
+        .navbar-light .navbar-nav {
+            color: #333332;
+            font-weight: 500;
+        }
+
+        .modal-body input,
+        .modal-body textarea,
+        .modal-body select {
+            flex: 1;
+            margin-right: 30px;
+            padding: 3px 0 3px 10px;
+            color: #8b96a4;
+            font-size: 13px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .modal-body select {
+            flex: 1;
+            margin-right: 0;
+            padding: 3px 0 3px 10px;
+            color: #8b96a4;
+            font-size: 13px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .selectModel {
+            flex: 1;
+            margin-right: 0px;
+            color: #333332 !important;
+            font-weight: 600 !important;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div>
+        <nav id="startchange" class="mmm  navbar navbar-expand-lg navbar-light fixed-top" style="height:10vh;">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'media_demo/img/lead-assets/logo-dsm.png' %}" />
+                </a>
+                </div>
+            </div>
+        </nav>
+        <style>
+            h2 {
+                color: #333332;
+                font-weight: bold;
+            }
+
+            h5 {
+                color: #333332;
+                font-weight: 600;
+            }
+
+            p {
+                color: #8b96a4;
+                font-weight: 500;
+            }
+        </style>
+
+        <section class="section1">
+            <div class="col-md-10 mx-auto">
+                <img src="{% static 'media_demo/img/lead-assets/Lead-Generation.png' %}" style="width: 100%; height: 80vh; object-fit: cover; background-position: bottom;"/>
+            </div>
+
+        </section>
+        <div class="text-center mt-4">
+            <h3>Discover the secrets behind the data below:</h3>
+            <h3>
+                <a href="{{ lead.link }}" target="_blank">{{ lead.link }}</a>
+            </h3>
+        </div>
+        <section class="section2">
+            <div class="col-md-12 pad-0">
+                <div class="col-md-10 mx-auto col-lg-8 col-sm-10 col-10 pad-0">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6 col-11 col-sm-10 order-2 order-md-1 order-lg-1 mx-auto pad-0">
+                            <img class="imgTopM" src="{% static 'media_demo/img/lead-assets/brand_summary.jpg' %}" />
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-12 col-sm-10 mx-auto order-1 order-md-2 order-lg-2"
+                            style="margin:auto">
+                            <div class="row">
+                                <div class="col-md-9 col-lg-9 col-11 col-sm-10 mx-auto p-0">
+                                    <hr class="hr" />
+                                    <h2 style="margin:20px 0 0px 0">Brand Summary: </h2>
+
+                                    <p style="margin:20px 0 0px 0">
+                                        <ul>
+                                            {% for key, value in formatted_summary.items %}
+                                                <li style="text-wrap: wrap;"><strong>{{ key }}:</strong> {{ value }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pad-0 hrDesktop" style="margin:70px 20px 0px 0">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section3 mb-5" id="cycleHoliday">
+            <div class="col-md-12 pad-0">
+                <div class="col-md-10 mx-auto col-lg-8 col-sm-10 col-10 pad-0">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6 col-xs-12 col-sm-10 mx-auto txtCenter">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-11 col-sm-10 mx-auto pad-0">
+                                    <hr class="hr" />
+                                    <h2 style="margin:20px 0 0px 0">Technology Stacks</h2>
+                                    <ul class="no-bullets">
+                                        {% for stack in tech_stacks_list %}
+                                            {% for number, description in stack.items %}
+                                                <li><strong>{{ number }}:</strong> {{ description }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-11 col-sm-10 mx-auto pad-0">
+                            <img class="imgTopM" src="{% static 'media_demo/img/lead-assets/techstack.jpg' %}" />
+                        </div>
+                    </div>
+                    <div class="pad-0 hrDesktop" style="margin:70px 20px 0px 0">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="section3 mb-5" id="hillWalking">
+            <div class="col-md-12 pad-0">
+                <div class="col-md-10 mx-auto col-lg-8 col-sm-10 col-10 pad-0">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6 col-11 col-sm-10 order-2 order-md-1 order-lg-1 mx-auto pad-0">
+                            <img class="imgTopM" src="{% static 'media_demo/img/lead-assets/seo_new.jpg' %}" />
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-12 col-sm-10 mx-auto order-1 order-md-2 order-lg-2 pad-0"
+                            style="margin:auto">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-11 col-sm-10 mx-auto">
+                                    <hr class="hr" />
+                                    <h2 style="margin:20px 0 0px 0">
+                                        SEO Score
+                                    </h2>
+                                    <div class="chart-container">
+                                        <canvas id="seoChart"></canvas>
+                                    </div>
+                                    <div class="mt-3 text-center">
+                                        <h6>Total SEO Score: <span id="totalSeoScore"></span> / 50</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="pad-0 hrDesktop" style="margin:70px 20px 0px 0">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="section3 mb-5" id="mindfulness">
+            <div class="col-md-12 pad-0">
+                <div class="col-md-10 mx-auto col-lg-8 col-sm-10 col-10 pad-0">
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-6 col-12 col-sm-10 mx-auto txtCenter pad-0">
+                            <div class="row">
+                                <div class="col-md-10 col-lg-10 col-11 col-sm-10 mx-auto">
+                                    <hr class="hr" />
+                                    <h2 style="margin:20px 0 0px 0">Traffic Analysis</h2>
+
+                                    <div class="chart-container">
+                                        <canvas id="trafficChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-lg-6 col-11 col-sm-10 mx-auto pad-0">
+                            <img class="imgTopM" src="{% static 'media_demo/img/lead-assets/traffic_analysis.jpg' %}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="section8 mb-5 ">
+            <div class="container">
+                <div class="col-md-12 ">
+                    <div class="col-md-8 col-10 col-sm-10 col-lg-8 mx-auto">
+                        <div class="row bestPartnerSection mb-5">
+                            <div class="">
+                                <div style="height: 100%;">
+                                    <hr class="hr" style="margin-top:1rem" />
+                                    <h2>We work with the <br /> best partners</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="loader" style="display:none;">
+                            <img src="{% static 'media_demo/img/lead-assets/spinner.gif' %}" alt="Loading..." />
+                        </div>
+                        <div id="loadingMessage" style="display:none; color: #281628; font-weight: bold;">
+                            Your lead is being generated. It may take some time as we gather data like SEO analytics...
+                        </div>
+                        <form id="leadForm">
+                            <div class="form-group mb-3">
+                                <label for="exampleInputName">Name</label>
+                                <input type="text" class="form-control" id="exampleInputName" name="name" placeholder="Enter name">
+                            </div>
+                        
+                            <div class="form-group mb-3">
+                                <label for="exampleInputContact">Contact Number</label>
+                                <input type="text" class="form-control" id="exampleInputContact" name="contact_no" placeholder="Enter contact number">
+                            </div>
+                        
+                            <div class="form-group mb-3">
+                                <label for="exampleInputIndustry">Industry</label>
+                                <input type="text" class="form-control" id="exampleInputIndustry" name="industry" placeholder="Enter industry">
+                            </div>
+                        
+                            <div class="form-group mb-3">
+                                <label for="exampleInputLocation">Location</label>
+                                <input type="text" class="form-control" id="exampleInputLocation" name="location" placeholder="Enter location">
+                            </div>
+                        
+                            <div class="form-group mb-3">
+                                <label for="exampleFormControlTextarea1">Notes</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" name="notes" rows="3" placeholder="Enter notes"></textarea>
+                            </div>
+                        
+                            <button type="submit" class="btnRequest" data-toggle="modal" data-target="#myModal" style="background-color:#281628;padding:15px 45px;">
+                                SUBMIT &nbsp;&nbsp; <i class="fa fa-angle-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <br />
+    </div>
+    <footer>
+        <hr />
+        <div class="mb-5">
+            <div class="row" style="margin:50px 0 50px 0">
+                <div class="col-md-10 col-lg-8  mx-auto">
+                    <!-- <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <ul>
+                                        <li>
+                                            <img class="footerLogo" src="{% static 'media_demo/img/lead-assets/logo-dsm.png' %}" />
+                                        </li>
+                                        <li>
+                                            Joan Nieto
+                                        </li>
+                                        <li>
+                                            645 36 54 14
+                                        </li>
+                                        <li>
+                                            info@moveonnmallorca.com
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-5">
+                                    <ul>
+                                        <li>
+                                            Who are we
+                                        </li>
+                                        <li>
+                                            Cycle-tourism
+                                        </li>
+                                        <li>
+                                            Hill-walking
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Mindfulness
+                                        </li>
+                                        <li>
+                                            Water sports
+                                        </li>
+                                        <li>
+                                            Personal training
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Legal Advice
+                                        </li>
+                                        <li>
+                                            Cookies Policy
+                                        </li>
+                                        <li>
+                                            <img src="{% static 'img/cycle-tourism-assets/icon_3.png' %}" />&nbsp;&nbsp;
+                                            <img src="{% static 'img/cycle-tourism-assets/icon_4.png' %}" />
+
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> -->
+                    <div class="text-center" style="font-size:small">
+                        <p>Copyrights &copy; DSM. All rights reserved.</p>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </footer>
+
+
+<script>
+    $(document).ready(function () {
+        var scroll_start = 0;
+        var startchange = $('#startchange');
+        var offset = startchange.offset();
+        $(document).scroll(function () {
+            scroll_start = $(this).scrollTop();
+            if (scroll_start > offset.top) {
+                $('.mmm').css('background-color', '#fff');
+            } else {
+                $('.mmm').css('background-color', '#fff');
+            }
+        });
+    });
+</script>
+<script>
+$(document).ready(function() {
+    $('#leadForm').on('submit', async function(event) {
+        event.preventDefault(); // Prevent form from submitting normally
+
+        // Show loader and message
+        $('#loader').show();
+        $('#loadingMessage').show();
+
+        try {
+            const formData = new FormData(this);
+            
+            const response = await fetch('/demo/add-lead/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    // Ensure that your server handles the request with FormData correctly
+                },
+            });
+
+            // Check if the response is OK (status code 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Hide loader and message
+            $('#loader').hide();
+            $('#loadingMessage').hide();
+
+            if (data.status === 'success') {
+                window.location.href = "{% url 'index' %}";
+            } else {
+                alert(data.error_message || 'Error adding lead');
+            }
+        } catch (error) {
+            // Hide loader and message
+            $('#loader').hide();
+            $('#loadingMessage').hide();
+
+            // Log the error to the console for debugging
+            console.error('Error during AJAX request:', error);
+
+            // Provide a user-friendly message
+            alert('An error occurred: ' + error.message);
+        }
+    });
+});
+
+</script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Parse SEO labels and data
+        const seoLabels = JSON.parse('{{ seo_labels|escapejs }}');
+        const seoData = JSON.parse('{{ seo_data|escapejs }}');
+        const totalSeoScore = seoData.reduce((a, b) => a + b, 0);
+        document.getElementById('totalSeoScore').textContent = totalSeoScore;
+
+        const seoCtx = document.getElementById('seoChart').getContext('2d');
+        new Chart(seoCtx, {
+            type: 'pie',
+            data: {
+                labels: seoLabels,
+                datasets: [{
+                    label: 'SEO Scores',
+                    data: seoData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '/10';
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#333'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Parse Traffic Analysis data
+        const trafficAnalysis = JSON.parse('{{ traffic_analysis|escapejs }}');
+        const trafficLabels = trafficAnalysis.top_pages.labels;
+        const trafficData = trafficAnalysis.top_pages.data;
+
+        // Check if data and labels are correctly parsed
+        console.log('Traffic Labels:', trafficLabels);
+        console.log('Traffic Data:', trafficData);
+
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: trafficLabels,
+                datasets: [{
+                    label: 'Top Pages Traffic',
+                    data: trafficData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Pages'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Traffic (%)'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'; // Adding '%' to y-axis values
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

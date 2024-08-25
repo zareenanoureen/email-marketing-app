@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'custom_mails',
     'authentication',
     'ai_optimization',
+    'demo_techrealm',
 ]
 
 MIDDLEWARE = [
@@ -189,3 +190,5 @@ SIMPLE_JWT = {
 CORS_ALLOW_ALL_ORIGINS = True
 
 LOGIN_REDIRECT_URL = 'signin'
+
+X_FRAME_OPTIONS = 'ALLOWALL'

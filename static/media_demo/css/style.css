@@ -1,0 +1,537 @@
+.section1 {
+    margin-top: 10vh;
+    color: #fff;
+}
+
+    .section1 img {
+        width: 100vw;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .section1 div div {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+
+    .section1 p {
+    }
+
+.pad-0 {
+    padding: 0;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.btnRequest {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 15px 30px;
+    border: none;
+    margin-top: 25px;
+    color: #fff;
+    background: #fd9003;
+}
+
+.fa-angle-right {
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.section2 {
+    margin-top: 150px;
+    white-space: nowrap;
+}
+
+    .section2 img {
+        background: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        width: 100%;
+    }
+
+.hr {
+    margin-top: -2rem;
+    margin-bottom: 1rem;
+    width: 15%;
+    border: 0;
+    border-top: 3px solid #fd9003;
+}
+*:focus {
+    outline: none;
+}
+button:focus {
+    outline: none;
+}
+.modal-dialog {
+    max-width: 800px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 90vh;
+}
+.section3 img {
+    background: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    width: 100%;
+}
+
+.section3 button {
+    background: transparent;
+    border: none;
+    margin: 25px 0 0 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.txtCenter {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.section7 img {
+    width: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.section7container {
+    height: 427px;
+    display: flex;
+    align-items: center !important;
+}
+
+.shedowCard:hover {
+    background-color: rgba(0,0,0,.03);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.3);
+}
+.dropdown-toggle::after {
+display: none;
+}
+.navbar-expand-lg .navbar-nav .nav-link {
+padding-right: 1rem;
+}
+.selectLang {
+border: none;
+font-size: 12px;
+color: #868686;
+}
+.ShoseImg {
+position: absolute;
+width: 100vw;
+}
+.flex1 {
+flex: 1;
+flex-wrap: wrap;
+}
+.bestPartnerSection {
+justify-content: space-evenly;display:flex;
+}
+@media (max-width: 576px){
+.section1 div div {
+    position: absolute;
+    top: 21%;
+    transform: translate(0, -50%);
+}
+#navbarSupportedContent{
+    background:#fff;
+    height:auto
+}
+h1 {
+    font-size: 16px;
+    font-weight: 700;
+}
+.section1 p{
+    font-size:10px;
+}
+.section1 .btnRequest {
+    font-size: 9px;
+    padding: 8px 15px;
+    margin-top: 0px;
+}
+.section2 {
+    margin-top: 77px;
+    white-space: nowrap;
+}
+h2{
+    font-size:24px;
+}
+h5{
+    font-size:16px;
+}
+p{
+    font-size:13px;
+}
+.imgTopM {
+    margin-top: 20px;
+}
+.hrDesktop{
+    display:none;
+}
+.learnMore{
+    font-size:10px !important;
+}
+#hillWalking, #waterSports {
+    margin-top: 80px;
+}
+.ImgdisplayNone{
+    display:none;
+}
+.ShoseImg {
+    position: inherit;
+}
+/*.bestPartnerSection {
+    display: block;
+}*/
+.section7container {
+    height: auto;
+}
+.flex1 {
+    flex: none;
+    flex-wrap: wrap;
+    margin-top:20px;
+}
+.SendMessageMap{
+    font-size:10px !important;
+}
+.mapImg {
+    height: 400px;
+}
+}
+
+
+@media(max-width: 375px){
+h1 {
+    font-size: 15px;
+    font-weight: 700;
+}
+.section1 p {
+    font-size: 10px;
+}
+.section1 .btnRequest {
+    font-size: 8px;
+    padding: 8px 15px;
+    margin-top: 0px;
+}
+.section2 {
+    margin-top: 77px;
+    white-space: nowrap;
+}
+h2 {
+    font-size: 20px;
+}
+h5 {
+    font-size: 14px;
+}
+p {
+    font-size: 11px;
+}
+footer ul li .footerLogo {
+    width: 160px;
+}
+
+footer {
+    font-size: 12px;
+}
+.navbar-brand > img {
+    width: 160px;
+}
+}
+
+
+@media(max-width: 320px) {
+h1 {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.section1 p {
+    font-size: 10px;
+}
+
+.section1 .btnRequest {
+    font-size: 8px;
+    padding: 8px 15px;
+    margin-top: 0px;
+}
+
+.section2 {
+    margin-top: 77px;
+    white-space: nowrap;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h5 {
+    font-size: 12px;
+}
+
+p {
+    font-size: 10px;
+}
+
+.navbar-brand > img {
+    width: 150px;
+}
+
+footer ul li .footerLogo {
+    width: 150px;
+}
+footer {
+    font-size: 12px;
+}
+
+}
+
+
+
+@media(max-width: 991px) and ( min-width: 700px) {
+.section1 div div {
+    position: absolute;
+    top: 21%;
+    transform: translate(0, -50%);
+}
+.navbar-brand > img {
+    width: 150px;
+}
+
+footer ul li .footerLogo {
+    width: 150px;
+}
+footer {
+    font-size: 12px;
+}
+#navbarSupportedContent {
+    background: #fff;
+    height: auto
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.section1 p {
+    font-size: 10px;
+}
+h3{
+    font-size:18px;
+}
+.section1 .btnRequest {
+    font-size: 9px;
+    padding: 8px 15px;
+    margin-top: 0px;
+}
+
+.section2 {
+    margin-top: 77px;
+    white-space: nowrap;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h5 {
+    font-size: 12px;
+}
+
+p {
+    font-size: 10px;
+}
+
+.imgTopM {
+    margin-top: 20px;
+}
+
+.hrDesktop {
+    display: none;
+}
+
+.learnMore {
+    font-size: 9px !important;
+}
+
+#hillWalking, #waterSports {
+    margin-top: 80px;
+}
+
+.ImgdisplayNone {
+    display: none;
+}
+
+.ShoseImg {
+    position: inherit;
+}
+/*.bestPartnerSection {
+    display: block;
+}*/
+.section7container {
+    height: auto;
+}
+
+.flex1 {
+    flex: none;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.SendMessageMap {
+    font-size: 10px !important;
+}
+
+.mapImg {
+    height: 400px;
+}
+.section7 .btnRequest{
+    font-size:10px;
+}
+}
+
+
+
+
+@media(max-width: 1100px) and ( min-width: 992px) {
+.section1 div div {
+    position: absolute;
+    top: 21%;
+    transform: translate(0, -50%);
+}
+
+.navbar-brand > img {
+    width: 150px;
+}
+
+footer ul li .footerLogo {
+    width: 150px;
+}
+
+footer {
+    font-size: 12px;
+}
+
+#navbarSupportedContent {
+    background: #fff;
+    height: auto
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.section1 p {
+    font-size: 10px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+.section1 .btnRequest {
+    font-size: 9px;
+    padding: 8px 15px;
+    margin-top: 0px;
+}
+
+.section2 {
+    margin-top: 77px;
+    white-space: nowrap;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h5 {
+    font-size: 12px;
+}
+
+p {
+    font-size: 10px;
+}
+
+.imgTopM {
+    margin-top: 20px;
+}
+
+.hrDesktop {
+    display: none;
+}
+
+.learnMore {
+    font-size: 9px !important;
+}
+
+#hillWalking, #waterSports {
+    margin-top: 80px;
+}
+
+.ImgdisplayNone {
+    display: none;
+}
+
+.ShoseImg {
+    position: inherit;
+}
+/*.bestPartnerSection {
+    display: block;
+}*/
+.section7container {
+    height: auto;
+}
+
+.flex1 {
+    flex: none;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.SendMessageMap {
+    font-size: 10px !important;
+}
+
+.mapImg {
+    height: 400px;
+}
+
+.section7 .btnRequest {
+    font-size: 10px;
+}
+}
+
+@media(max-width: 1550px) and ( min-width: 992px) {
+.footerLogo{
+    width:200px;
+}
+}
+
+
+    .section3 img {
+        background: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .cardtestimonials {
+        padding: 25px 20px;
+        border: 1px solid #f3eded;
+        background: #fff;
+        font-size: 14px;
+    }
+
+    .shadow {
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.1) !important;
+    }
+    
