@@ -26,7 +26,7 @@ Create a superuser for the Django admin:
     docker-compose exec django python manage.py createsuperuser
     ```
 
-Access the application in your browser at `http://142.93.194.97:8000`.
+Access the application in your browser at `http://142.93.194.97:80`.
 ## Additional Commands
 
 To view logs:
