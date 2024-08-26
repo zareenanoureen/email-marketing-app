@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 groq_api_key  = os.getenv('GROQ_API_KEY')
-client = Groq(api_key=groq_api_key)
+if not groq_api_key:
+    raise ValueError("GROQ_API_KEY environment variable not set")
 
 client = Groq(api_key=groq_api_key)
 model = "llama3-8b-8192"
