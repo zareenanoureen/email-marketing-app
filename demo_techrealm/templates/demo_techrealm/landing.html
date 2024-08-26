@@ -228,7 +228,7 @@
         <section class="section3 mb-5" id="cycleHoliday">
             <div class="col-md-12 pad-0">
                 <div class="col-md-10 mx-auto col-lg-8 col-sm-10 col-10 pad-0">
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col-md-6 col-lg-6 col-xs-12 col-sm-10 mx-auto txtCenter">
                             <div class="row">
                                 <div class="col-md-10 col-lg-10 col-11 col-sm-10 mx-auto pad-0">
@@ -237,7 +237,7 @@
                                     <ul class="no-bullets">
                                         {% for stack in tech_stacks_list %}
                                             {% for number, description in stack.items %}
-                                                <li><strong>{{ number }}:</strong> {{ description }}</li>
+                                                <li style="text-wrap: wrap;"><strong>{{ number }}:</strong> {{ description }}</li>
                                             {% endfor %}
                                         {% endfor %}
                                     </ul>
